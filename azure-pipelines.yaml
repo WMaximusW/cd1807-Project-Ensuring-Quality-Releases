@@ -144,7 +144,7 @@ stages:
                 python3 -m pip install --upgrade pip
                 python3 -m pip install -r requirements.txt
                 export PATH="$PATH:/usr/bin"
-                python3 login.py > $(Agent.BuildDirectory)/selenium_test_output.log
+                python3 login.py | tee -a $(Agent.BuildDirectory)/selenium_test_output.log
 
           - task: PublishPipelineArtifact@1
             displayName: 'Publish Selenium Test Log'
