@@ -35,12 +35,19 @@ stages:
               provider: 'azurerm'
               command: 'init'
               workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
-              environmentServiceNameAzureRM: '$(azureServiceConnectionId)'
+              backendServiceArm: '$(azureServiceConnectionId)'
               backendAzureRmResourceGroupName: '$(resource_group_name)'
               backendAzureRmStorageAccountName: 'tfstate39711214'
               backendAzureRmContainerName: 'tfstate'
               backendAzureRmKey: 'test.terraform.tfstate'
               commandOptions: '-input=false -backend-config="client_id=$(client_id)" -backend-config="client_secret=$(client_secret)" -backend-config="tenant_id=$(tenant_id)"'
+          
+           # Run Terraform Validate    
+          - task: TerraformTaskV4@4
+            displayName: Terraform validate
+            inputs:
+              provider: 'azurerm'
+              command: 'validate'
 
           # Run Terraform Apply
           - task: TerraformTaskV4@4
@@ -48,6 +55,15 @@ stages:
             inputs:
               provider: 'azurerm'
               command: 'apply'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
+              environmentServiceNameAzureRM: '$(azureServiceConnectionId)'
+              commandOptions: '-input=false -var-file=$(tfvars.secureFilePath) -auto-approve'
+          
+          - task: TerraformTaskV4@4
+            displayName: Terraform destroy
+            inputs:
+              provider: 'azurerm'
+              command: 'destroy'
               workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
               environmentServiceNameAzureRM: '$(azureServiceConnectionId)'
               commandOptions: '-input=false -var-file=$(tfvars.secureFilePath) -auto-approve'
