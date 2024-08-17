@@ -144,8 +144,8 @@ stages:
                 cd /home/azureuser/selenium_tests
                 python3 -m pip install --upgrade pip
                 python3 -m pip install -r requirements.txt
-                # Locate chromedriver
-                CHROMEDRIVER_PATH=$(find ~/.local/lib/python3.6/site-packages/chromedriver_py/ -name chromedriver)
+                # Explicitly set the chromedriver path
+                export CHROMEDRIVER_PATH="/home/azureuser/.local/lib/python3.6/site-packages/chromedriver_py/chromedriver"
                 export PATH=$PATH:$CHROMEDRIVER_PATH
                 python3 login.py > selenium_test_output.log
 
