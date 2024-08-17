@@ -29,20 +29,6 @@ stages:
       displayName: 'Terrafom installation'
       inputs:
         terraformVersion: '1.2.9'
-
-    # Download Secure terraform.tfvars file
-    - task: DownloadSecureFile@1
-      name: tfvars
-      inputs:
-        secureFile: terraform.tfvars
-    
-    # Extract arm_access_key from terraform.tfvars and set it as an environment variable (Windows)
-    - powershell: |
-        $content = Get-Content -Path "$(tfvars.secureFilePath)" | Select-String -Pattern 'arm_access_key\s*=\s*"(.*)"'
-        $matches = $content.Matches.Groups[1].Value
-        echo "Setting ARM_ACCESS_KEY environment variable"
-        [System.Environment]::SetEnvironmentVariable('ARM_ACCESS_KEY', $matches, 'Process')
-      displayName: 'Extract and set ARM_ACCESS_KEY environment variable'
     
     # Run Terraform Init on the pipeline agent 
     # ToDo: Replace the resource group name, storage account name, and container name below
@@ -54,10 +40,9 @@ stages:
         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
         backendServiceArm: '$(azureServiceConnectionId)'
         backendAzureRmResourceGroupName: 'trungnq72-resource_group_project_3'
-        backendAzureRmStorageAccountName: 'tfstate2829816046'
+        backendAzureRmStorageAccountName: 'tfstate39711214'
         backendAzureRmContainerName: 'tfstate'
         backendAzureRmKey: 'test.terraform.tfstate'
-        backendAzureRmAccessKey: '$(ARM_ACCESS_KEY)'  # Use the extracted environment variable
 
     # Run Terraform Validate    
     - task: TerraformTaskV3@3
