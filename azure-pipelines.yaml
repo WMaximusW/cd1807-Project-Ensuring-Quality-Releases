@@ -19,15 +19,6 @@ stages:
             inputs:
               terraformVersion: '1.2.9'
           
-          # Explicit Azure login using service principal
-          - task: AzureCLI@2
-            inputs:
-              azureSubscription: '$(azureServiceConnectionId)'
-              scriptType: 'ps'
-              scriptLocation: 'inlineScript'
-              inlineScript: |
-                az login --service-principal -u $(client_id) -p $(client_secret) --tenant $(tenant_id)
-
           # Run Terraform Init
           - task: TerraformTaskV3@3
             displayName: 'Terraform init'
@@ -48,17 +39,6 @@ stages:
             inputs:
               provider: 'azurerm'
               command: 'validate'
-
-          # Terraform Import using AzureCLI
-          - task: AzureCLI@2
-            displayName: 'Terraform import resource group'
-            inputs:
-              azureSubscription: '$(azureServiceConnectionId)'
-              workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
-              scriptType: 'ps'
-              scriptLocation: 'inlineScript'
-              inlineScript: |
-                terraform import module.resource_group.azurerm_resource_group.test /subscriptions/$(subscription_id)/resourceGroups/$(resource_group_name)
 
           # Run Terraform Apply
           - task: TerraformTaskV3@3
