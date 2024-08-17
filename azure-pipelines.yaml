@@ -36,6 +36,12 @@ stages:
       inputs:
         secureFile: terraform.tfvars
     
+    # Extract arm_access_key from terraform.tfvars and set it as an environment variable
+    - script: |
+        ARM_ACCESS_KEY=$(grep 'arm_access_key' $(tfvars.secureFilePath) | cut -d '=' -f2 | tr -d ' "')
+        echo "##vso[task.setvariable variable=ARM_ACCESS_KEY]$ARM_ACCESS_KEY"
+      displayName: 'Extract and set ARM_ACCESS_KEY environment variable'
+    
     # Run Terraform Init on the pipeline agent 
     # ToDo: Replace the resource group name, storage account name, and container name below
     - task: TerraformTaskV3@3
@@ -49,7 +55,7 @@ stages:
         backendAzureRmStorageAccountName: 'tfstate2829816046'
         backendAzureRmContainerName: 'tfstate'
         backendAzureRmKey: 'test.terraform.tfstate'
-        commandOptions: '-var-file=$(tfvars.secureFilePath)'
+        backendAzureRmAccessKey: '$(ARM_ACCESS_KEY)'  # Use the extracted environment variable
 
     # Run Terraform Validate    
     - task: TerraformTaskV3@3
