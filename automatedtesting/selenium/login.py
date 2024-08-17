@@ -8,7 +8,7 @@ def login(user, password):
     print('Starting the browser...')
     
     # Set the chromedriver path
-    chromedriver_path = "/home/azureuser/.local/lib/python3.6/site-packages/chromedriver_py/chromedriver"
+    chromedriver_path = "/home/azureuser/.local/lib/python3.6/site-packages/chromedriver_py/chromedriver_linux64"
     
     options = ChromeOptions()
     options.add_argument("--headless")  # Run Chrome in headless mode
