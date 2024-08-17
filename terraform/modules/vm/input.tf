@@ -38,10 +38,9 @@ variable "admin_username" {
   type        = string
 }
 
-variable "admin_password" {
-  description = "The administrator password for the virtual machine."
+variable "public_key" {
+  description = "The public key for the virtual machine."
   type        = string
-  sensitive   = true
 }
 
 variable "os_disk_type" {
