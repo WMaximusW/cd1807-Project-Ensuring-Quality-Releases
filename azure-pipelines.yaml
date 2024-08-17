@@ -144,7 +144,7 @@ stages:
                 cd /home/azureuser/selenium_tests
                 python3 -m pip install --upgrade pip
                 python3 -m pip install -r requirements.txt
-                export PATH=$PATH:/home/azureuser/.local/bin
+                export PATH=$PATH:'usr/bin'
                 python3 login.py > selenium_test_output.log
 
           # Publish the log file as an artifact
