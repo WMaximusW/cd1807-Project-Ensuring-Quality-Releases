@@ -26,8 +26,6 @@ stages:
               provider: 'azurerm'
               command: 'init'
               workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
-              backendAzureRmUseEnvironmentVariablesForAuthentication: true
-              backendAzureRmUseEntraIdForAuthentication: true
               backendServiceArm: 'trungnq72-udacity-project3-service-connection-id'
               backendAzureRmResourceGroupName: 'trungnq72-resource_group_project_3'
               backendAzureRmStorageAccountName: 'tfstate39711214'
