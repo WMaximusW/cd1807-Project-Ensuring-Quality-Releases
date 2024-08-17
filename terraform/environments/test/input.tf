@@ -61,3 +61,30 @@ variable "arm_access_key" {
   sensitive   = true
   default     = ""
 }
+
+# Declare admin_username variable
+variable "admin_username" {
+  description = "The admin username for the virtual machine."
+  type        = string
+}
+
+# Declare vm_size variable
+variable "vm_size" {
+  description = "The size of the virtual machine."
+  type        = string
+  default     = "Standard_DS1_v2"  # You can change this to your preferred size
+}
+
+# Declare public_key variable
+variable "public_key" {
+  description = "The path to the public SSH key for the virtual machine."
+  type        = string
+  default     = "C:/Users/wnguy/.ssh/id_rsa.pub"  # Replace with your key path
+}
+
+# Declare os_disk_type variable
+variable "os_disk_type" {
+  description = "The type of the OS disk for the virtual machine."
+  type        = string
+  default     = "Standard_LRS"  # You can change this to "Premium_LRS" if needed
+}
