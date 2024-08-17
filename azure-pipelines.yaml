@@ -29,7 +29,7 @@ stages:
                 az login --service-principal -u $(client_id) -p $(client_secret) --tenant $(tenant_id)
 
           # Run Terraform Init
-          - task: TerraformTaskV4@4
+          - task: TerraformTaskV3@3
             displayName: 'Terraform init'
             inputs:
               provider: 'azurerm'
@@ -43,14 +43,14 @@ stages:
               commandOptions: '-input=false -backend-config="client_id=$(client_id)" -backend-config="client_secret=$(client_secret)" -backend-config="tenant_id=$(tenant_id)" -backend-config="subscription_id=$(subscription_id)" -backend-config="use_msi=true"'
           
            # Run Terraform Validate    
-          - task: TerraformTaskV4@4
+          - task: TerraformTaskV3@3
             displayName: Terraform validate
             inputs:
               provider: 'azurerm'
               command: 'validate'
 
           # Run Terraform Apply
-          - task: TerraformTaskV4@4
+          - task: TerraformTaskV3@3
             displayName: 'Terraform apply'
             inputs:
               provider: 'azurerm'
@@ -59,7 +59,7 @@ stages:
               environmentServiceNameAzureRM: '$(azureServiceConnectionId)'
               commandOptions: '-input=false -var-file=$(tfvars.secureFilePath) -auto-approve'
           
-          - task: TerraformTaskV4@4
+          - task: TerraformTaskV3@3
             displayName: Terraform destroy
             inputs:
               provider: 'azurerm'
