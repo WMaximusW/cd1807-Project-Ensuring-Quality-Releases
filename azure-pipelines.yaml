@@ -23,6 +23,7 @@ stages:
           # - task: AzureCLI@2
           #   inputs:
           #     azureSubscription: '$(azureServiceConnectionId)'
+          #     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
           #     scriptType: 'ps'
           #     scriptLocation: 'inlineScript'
           #     inlineScript: |
@@ -36,6 +37,7 @@ stages:
             displayName: 'Terraform import resource group'
             inputs:
               azureSubscription: '$(azureServiceConnectionId)'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
               scriptType: 'ps'
               scriptLocation: 'inlineScript'
               inlineScript: |
