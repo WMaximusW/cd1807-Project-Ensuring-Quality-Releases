@@ -38,13 +38,10 @@ stages:
         commandOptions: '-input=false'
 
     # Run Terraform Validate    
-    - task: TerraformTaskV3@3
-      displayName: 'Terraform validate'
+    - task: TerraformTaskV4@4
       inputs:
         provider: 'azurerm'
         command: 'validate'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
-        commandOptions: '-var-file=$(tfvars.secureFilePath)'
 
     # Run Terraform Apply
     - task: TerraformTaskV3@3
