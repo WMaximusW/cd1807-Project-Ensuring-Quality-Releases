@@ -120,8 +120,13 @@ stages:
               sourceFolder: '$(Pipeline.Workspace)'
               contents: 'selenium_tests.zip'
               targetFolder: '/home/devopsagent/'
-
-           # SSH into the VM and run the Selenium Test Suite
+  
+  - stage: Test
+    dependsOn: Deploy
+    jobs:
+      - job: RunTests
+        steps:
+          # SSH into the VM and run the Selenium Test Suite
           - task: SSH@0
             displayName: 'Run Selenium Test Suite on VM'
             inputs:
@@ -140,4 +145,3 @@ stages:
             inputs:
               artifactName: 'selenium-log'
               targetPath: '/home/devopsagent/selenium_tests/selenium_test_output.log'
-                   
