@@ -1,2 +1,2 @@
-selenium==4.4.0
+selenium
 chromedriver-py==110.0.5481.77
