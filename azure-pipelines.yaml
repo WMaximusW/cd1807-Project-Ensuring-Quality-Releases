@@ -57,7 +57,7 @@ stages:
               command: 'apply'
               workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
               environmentServiceNameAzureRM: '$(azureServiceConnectionId)'
-              commandOptions: '-input=false -var-file=$(tfvars.secureFilePath) -auto-approve'
+              commandOptions: '-input=false -auto-approve'
           
           - task: TerraformTaskV3@3
             displayName: Terraform destroy
@@ -66,4 +66,4 @@ stages:
               command: 'destroy'
               workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
               environmentServiceNameAzureRM: '$(azureServiceConnectionId)'
-              commandOptions: '-input=false -var-file=$(tfvars.secureFilePath) -auto-approve'
+              commandOptions: '-input=false -auto-approve'
