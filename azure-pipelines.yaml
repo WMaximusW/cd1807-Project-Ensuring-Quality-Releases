@@ -25,6 +25,7 @@ stages:
     
     # Run Terraform Init
     - task: TerraformTaskV4@4
+      displayName: 'Terraform init'
       inputs:
         provider: 'azurerm'
         command: 'init'
@@ -40,6 +41,7 @@ stages:
 
     # Run Terraform Validate    
     - task: TerraformTaskV4@4
+      displayName: 'Terraform validate'
       inputs:
         provider: 'azurerm'
         command: 'validate'
