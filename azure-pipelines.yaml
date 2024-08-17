@@ -19,21 +19,6 @@ stages:
             inputs:
               terraformVersion: '1.2.9'
           
-          - task: AzureCLI@2
-            inputs:
-              azureSubscription: '$(azureServiceConnectionId)'  # Replace with your Azure service connection if needed
-              scriptType: 'ps'
-              scriptLocation: 'inlineScript'
-              inlineScript: |
-                # Login using the service principal
-                az login --service-principal -u $(client_id) -p $(client_secret) --tenant $(tenant_id)
-                
-                # Set the subscription (optional, remove if you prefer to use the subscription ID in commands directly)
-                az account set --subscription $(subscription_id)
-      
-                # Example command to verify the login and subscription
-                az group list --output table
-
           # Run Terraform Init
           - task: TerraformTaskV3@3
             displayName: 'Terraform init'
