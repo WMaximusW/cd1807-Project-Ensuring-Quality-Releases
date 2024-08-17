@@ -55,12 +55,12 @@ module "publicip" {
 module "vm" {
   source               = "../../modules/vm"
   location             = var.location
-  resource_type        = "VM"
-  resource_group       = module.resource_group.resource_group_name
+  resource_group_name  = module.resource_group.resource_group_name
   admin_username       = var.admin_username
   subnet_id            = module.network.subnet_id_test
   public_ip_address_id = module.publicip.public_ip_address_id
   vm_name              = "trungnq-vm-project3"
   vm_size              = var.vm_size
+  public_key           = var.public_key
   os_disk_type         = var.os_disk_type
 }
