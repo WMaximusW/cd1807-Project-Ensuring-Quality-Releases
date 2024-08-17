@@ -66,6 +66,7 @@ variable "arm_access_key" {
 variable "admin_username" {
   description = "The admin username for the virtual machine."
   type        = string
+  default     = "azureuser"  # Set a default username
 }
 
 # Declare vm_size variable
