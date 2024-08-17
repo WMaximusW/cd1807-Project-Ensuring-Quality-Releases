@@ -140,10 +140,10 @@ stages:
                 sudo apt-get update
                 sudo apt-get install -y python3-pip unzip
                 mkdir -p /home/azureuser/selenium_tests
-                unzip /home/azureuser/selenium_tests.zip -d /home/azureuser/selenium_tests
+                unzip -o /home/azureuser/selenium_tests.zip -d /home/azureuser/selenium_tests
                 cd /home/azureuser/selenium_tests
                 python3 -m pip install --upgrade pip
-                pip install -r requirements.txt
+                python3 -m pip install -r requirements.txt
                 python3 login.py > selenium_test_output.log
 
           # Publish the log file as an artifact
