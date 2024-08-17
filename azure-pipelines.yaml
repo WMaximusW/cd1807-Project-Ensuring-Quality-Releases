@@ -59,12 +59,25 @@ stages:
               archiveType: 'zip'
               archiveFile: '$(Build.ArtifactStagingDirectory)/webapp.zip'
               replaceExistingArchive: true
+
+          # Publish the archived package as an artifact
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish Artifact: webapp'
+            inputs:
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)/webapp.zip'
+              ArtifactName: 'webapp'
   
   - stage: Deploy
     dependsOn: Build
     jobs:
       - job: DeployToAzure
         steps:
+          # Download the published artifact
+          - task: DownloadPipelineArtifact@2
+            displayName: 'Download webapp artifact'
+            inputs:
+              artifact: 'webapp'
+
           # Deploy the archived package to Azure Web App
           - task: AzureWebApp@1
             displayName: 'Deploy to Azure Web App'
@@ -72,5 +85,5 @@ stages:
               azureSubscription: '$(azureServiceConnectionId)'
               appType: 'webApp'
               appName: 'trungnq72-project3-AppService'
-              package: '$(Build.ArtifactStagingDirectory)/webapp.zip'
+              package: '$(Pipeline.Workspace)/webapp/webapp.zip'
               deployToSlotOrASE: false           
