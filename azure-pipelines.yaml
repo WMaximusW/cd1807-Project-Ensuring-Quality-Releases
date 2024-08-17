@@ -66,6 +66,24 @@ stages:
             inputs:
               PathtoPublish: '$(Build.ArtifactStagingDirectory)/webapp.zip'
               ArtifactName: 'webapp'
+
+          # Archive the Selenium Test Suite
+          - task: ArchiveFiles@2
+            displayName: 'Archive Selenium Test Suite'
+            inputs:
+              rootFolderOrFile: 'automatedtesting/selenium'
+              includeRootFolder: false
+              archiveType: 'zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/selenium_tests.zip'
+              replaceExistingArchive: true
+          
+           # Publish the Selenium Test Suite as a build artifact
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish Selenium Test Suite Artifact'
+            inputs:
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)/selenium_tests.zip'
+              ArtifactName: 'selenium-tests'
+            
   
   - stage: Deploy
     dependsOn: Build
@@ -86,4 +104,40 @@ stages:
               appType: 'webApp'
               appName: 'trungnq72-project3-AppService'
               package: '$(Pipeline.Workspace)/webapp.zip'
-              deployToSlotOrASE: false           
+              deployToSlotOrASE: false   
+
+          # Download the artifact
+          - task: DownloadPipelineArtifact@2
+            displayName: 'Download Selenium Test Suite Artifact' 
+            inputs:
+              artifact: 'selenium-tests'
+
+          # Copy the Selenium Test Suite to the VM
+          - task: CopyFilesOverSSH@0
+            displayName: 'Upload Selenium Test Suite to VM'
+            inputs:
+              sshEndpoint: '$(sshEndpoint)'
+              sourceFolder: '$(Pipeline.Workspace)'
+              contents: 'selenium_tests.zip'
+              targetFolder: '/home/devopsagent/'
+
+           # SSH into the VM and run the Selenium Test Suite
+          - task: SSH@0
+            displayName: 'Run Selenium Test Suite on VM'
+            inputs:
+              sshEndpoint: '$(sshEndpoint)'
+              runOptions: 'inline'
+              command: |
+                unzip /home/devopsagent/selenium_tests.zip -d /home/devopsagent/selenium_tests
+                cd /home/devopsagent/selenium_tests
+                python3 -m pip install --upgrade pip
+                pip install -r requirements.txt
+                python3 login.py > selenium_test_output.log
+
+          # Publish the log file as an artifact
+          - task: PublishPipelineArtifact@1
+            displayName: 'Publish Selenium Test Log'
+            inputs:
+              artifactName: 'selenium-log'
+              targetPath: '/home/devopsagent/selenium_tests/selenium_test_output.log'
+                   
