@@ -71,6 +71,6 @@ stages:
             inputs:
               azureSubscription: '$(azureServiceConnectionId)'
               appType: 'webApp'
-              appName: 'trungnq72-web-app-project3'
+              appName: 'trungnq72-project3-AppService'
               package: '$(Build.ArtifactStagingDirectory)/webapp.zip'
               deployToSlotOrASE: false           
