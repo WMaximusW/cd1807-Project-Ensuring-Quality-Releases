@@ -19,6 +19,15 @@ stages:
             inputs:
               terraformVersion: '1.2.9'
           
+          # Explicit Azure login using service principal
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: '$(azureServiceConnectionId)'
+              scriptType: 'ps'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                az login --service-principal -u $(client_id) -p $(client_secret) --tenant $(tenant_id)
+
           # Run Terraform Init
           - task: TerraformTaskV3@3
             displayName: 'Terraform init'
