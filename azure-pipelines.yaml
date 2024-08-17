@@ -40,7 +40,7 @@ stages:
               backendAzureRmStorageAccountName: 'tfstate39711214'
               backendAzureRmContainerName: 'tfstate'
               backendAzureRmKey: 'test.terraform.tfstate'
-              commandOptions: '-input=false -backend-config="client_id=$(client_id)" -backend-config="client_secret=$(client_secret)" -backend-config="tenant_id=$(tenant_id)"'
+              commandOptions: '-input=false -backend-config="client_id=$(client_id)" -backend-config="client_secret=$(client_secret)" -backend-config="tenant_id=$(tenant_id)" -backend-config="subscription_id=$(subscription_id)"'
           
            # Run Terraform Validate    
           - task: TerraformTaskV4@4
