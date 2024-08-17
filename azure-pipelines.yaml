@@ -30,10 +30,11 @@ stages:
       inputs:
         terraformVersion: '1.2.9'
 
-     # Set ARM_ACCESS_KEY from the Library
-    - script: |
-        echo "##vso[task.setvariable variable=ARM_ACCESS_KEY]$(ARM_ACCESS_KEY)"
-      displayName: 'Set ARM_ACCESS_KEY environment variable'
+    # Download Secure terraform.tfvars file
+    - task: DownloadSecureFile@1
+      name: tfvars
+      inputs:
+        secureFile: terraform.tfvars
     
     # Run Terraform Init on the pipeline agent 
     # ToDo: Replace the resource group name, storage account name, and container name below
@@ -48,6 +49,7 @@ stages:
         backendAzureRmStorageAccountName: 'tfstate2829816046'
         backendAzureRmContainerName: 'tfstate'
         backendAzureRmKey: 'test.terraform.tfstate'
+        commandOptions: '-var-file=$(tfvars.secureFilePath)'
 
     # Run Terraform Validate    
     - task: TerraformTaskV3@3
@@ -55,6 +57,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'validate'
+        commandOptions: '-var-file=$(tfvars.secureFilePath)'
 
     
     # Run Terraform Apply
@@ -66,6 +69,7 @@ stages:
         command: 'apply'
         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
         environmentServiceNameAzureRM: '$(azureServiceConnectionId)'
+        commandOptions: '-var-file=$(tfvars.secureFilePath)'
 
     # Destroy the resources in Azure
     # ToDo: Change the workingDirectory path, as applicable to you
@@ -75,4 +79,5 @@ stages:
         provider: 'azurerm'
         command: 'destroy'
         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
-        environmentServiceNameAzureRM: '$(azureServiceConnectionId)'        
+        environmentServiceNameAzureRM: '$(azureServiceConnectionId)'
+        commandOptions: '-var-file=$(tfvars.secureFilePath)'   
