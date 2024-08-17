@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from selenium import webdriver
+from chromedriver_py import binary_path # this will get you the path variable
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 import os
 
