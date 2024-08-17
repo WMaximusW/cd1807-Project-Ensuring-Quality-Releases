@@ -144,19 +144,11 @@ stages:
                 python3 -m pip install --upgrade pip
                 python3 -m pip install -r requirements.txt
                 export PATH="$PATH:/usr/bin"
-                python3 login.py | tee -a /home/azureuser/selenium_tests/selenium_test_output.log
+                python3 login.py | tee selenium_test_output.log
           
-          - task: CopyFilesOverSSH@0
-            displayName: 'Download Selenium Test Log from VM'
-            inputs:
-              sshEndpoint: '$(sshEndpoint)'
-              sourceFolder: '/home/azureuser/selenium_tests/'  # Correct path on VM
-              contents: 'selenium_test_output.log'
-              targetFolder: '$(Build.ArtifactStagingDirectory)'  # Azure DevOps pipeline workspace
-              cleanTargetFolder: false
-
+          # Publish the log file as an artifact directly from the VM
           - task: PublishPipelineArtifact@1
             displayName: 'Publish Selenium Test Log'
             inputs:
               artifactName: 'selenium-log'
-              targetPath: '$(Build.ArtifactStagingDirectory)/selenium_test_output.log'
+              targetPath: '/home/azureuser/selenium_tests/selenium_test_output.log'  # Log file on the VM
