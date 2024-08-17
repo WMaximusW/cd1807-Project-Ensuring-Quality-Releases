@@ -119,7 +119,7 @@ stages:
               sshEndpoint: '$(sshEndpoint)'
               sourceFolder: '$(Pipeline.Workspace)'
               contents: 'selenium_tests.zip'
-              targetFolder: '/home/devopsagent/'
+              targetFolder: '/home/azureuser/'
   
   - stage: Test
     dependsOn: Deploy
@@ -133,8 +133,8 @@ stages:
               sshEndpoint: '$(sshEndpoint)'
               runOptions: 'inline'
               command: |
-                unzip /home/devopsagent/selenium_tests.zip -d /home/devopsagent/selenium_tests
-                cd /home/devopsagent/selenium_tests
+                unzip /home/azureuser/selenium_tests.zip -d /home/azureuser/selenium_tests
+                cd /home/azureuser/selenium_tests
                 python3 -m pip install --upgrade pip
                 pip install -r requirements.txt
                 python3 login.py > selenium_test_output.log
@@ -144,4 +144,4 @@ stages:
             displayName: 'Publish Selenium Test Log'
             inputs:
               artifactName: 'selenium-log'
-              targetPath: '/home/devopsagent/selenium_tests/selenium_test_output.log'
+              targetPath: '/home/azureuser/selenium_tests/selenium_test_output.log'
