@@ -150,8 +150,7 @@ stages:
             displayName: 'Download Selenium Test Log from VM'
             inputs:
               sshEndpoint: '$(sshEndpoint)'
-              runOptions: 'inline'
-              command: |
+              inline: |
                 scp /home/azureuser/selenium_tests/selenium_test_output.log $(Agent.BuildDirectory)/selenium_test_output.log
 
           - task: PublishPipelineArtifact@1
