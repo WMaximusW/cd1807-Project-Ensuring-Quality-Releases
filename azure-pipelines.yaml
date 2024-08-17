@@ -1,22 +1,14 @@
 name: Azure Pipelines
 
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
 trigger:
 - main
 
-# ToDo: Replace the agent pool name, if you are using Udacity Cloud lab. 
-# Otherwise comment out the line below. 
 pool: TrungNQ72-Udacity-Project3-SelfHost
 
 variables:
-  python.version: '3.7.6'
-  # ToDo: Replace the service connection name as used in the DevOps project settings
+  python_version: '3.7.6'
   azureServiceConnectionId: 'trungnq72-udacity-project3-service-connection-id'
-  # Project root folder. Point to the folder containing manage.py file.
   projectRoot: $(System.DefaultWorkingDirectory)
-  # Environment name
   environmentName: 'test'
 
 stages:
@@ -26,14 +18,13 @@ stages:
     steps:
     # Install Terraform on the pipeline agent 
     - task: TerraformInstaller@0
-      displayName: 'Terrafom installation'
+      displayName: 'Terraform installation'
       inputs:
         terraformVersion: '1.2.9'
     
-    # Run Terraform Init on the pipeline agent 
-    # ToDo: Replace the resource group name, storage account name, and container name below
+    # Run Terraform Init
     - task: TerraformTaskV3@3
-      displayName: 'Terrafom init'
+      displayName: 'Terraform init'
       inputs:
         provider: 'azurerm'
         command: 'init'
@@ -43,34 +34,33 @@ stages:
         backendAzureRmStorageAccountName: 'tfstate39711214'
         backendAzureRmContainerName: 'tfstate'
         backendAzureRmKey: 'test.terraform.tfstate'
+        commandOptions: '-input=false'
 
     # Run Terraform Validate    
     - task: TerraformTaskV3@3
-      displayName: Terraform validate
+      displayName: 'Terraform validate'
       inputs:
         provider: 'azurerm'
         command: 'validate'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
         commandOptions: '-var-file=$(tfvars.secureFilePath)'
 
-    
     # Run Terraform Apply
-    # ToDo: Change the workingDirectory path, as applicable to you
     - task: TerraformTaskV3@3
-      displayName: Terraform apply
+      displayName: 'Terraform apply'
       inputs:
         provider: 'azurerm'
         command: 'apply'
         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
         environmentServiceNameAzureRM: '$(azureServiceConnectionId)'
-        commandOptions: '-var-file=$(tfvars.secureFilePath)'
+        commandOptions: '-input=false -var-file=$(tfvars.secureFilePath) -auto-approve'
 
     # Destroy the resources in Azure
-    # ToDo: Change the workingDirectory path, as applicable to you
     - task: TerraformTaskV3@3
-      displayName: Terraform destroy
+      displayName: 'Terraform destroy'
       inputs:
         provider: 'azurerm'
         command: 'destroy'
         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
         environmentServiceNameAzureRM: '$(azureServiceConnectionId)'
-        commandOptions: '-var-file=$(tfvars.secureFilePath)'   
+        commandOptions: '-var-file=$(tfvars.secureFilePath) -auto-approve'
