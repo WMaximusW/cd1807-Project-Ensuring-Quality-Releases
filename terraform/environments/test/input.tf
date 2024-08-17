@@ -27,7 +27,7 @@ variable "location" {
   default     = "eastus"  # Set a default value if desired
 }
 
-variable "resource_group" {
+variable "resource_group_name" {
   description = "The name of the resource group"
   type        = string
   default     = "trungnq72-resource_group_project_3"
