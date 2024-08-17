@@ -49,13 +49,15 @@ stages:
               provider: 'azurerm'
               command: 'validate'
 
-          # Terraform Import
-          - task: TerraformCLI@0
+          # Terraform Import using AzureCLI
+          - task: AzureCLI@2
             displayName: 'Terraform import resource group'
             inputs:
-              command: 'custom'
-              workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
-              commandOptions: 'import module.resource_group.azurerm_resource_group.test/subscriptions/$(subscription_id)/resourceGroups/$(resource_group_name)'
+              azureSubscription: '$(azureServiceConnectionId)'
+              scriptType: 'ps'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                terraform import module.resource_group.azurerm_resource_group.test /subscriptions/$(subscription_id)/resourceGroups/$(resource_group_name)
 
           # Run Terraform Apply
           - task: TerraformTaskV3@3
