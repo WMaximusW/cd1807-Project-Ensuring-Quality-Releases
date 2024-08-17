@@ -132,7 +132,7 @@ stages:
             inputs:
               sshEndpoint: '$(sshEndpoint)'
               runOptions: 'inline'
-              command: |
+              inline: |
                 unzip /home/azureuser/selenium_tests.zip -d /home/azureuser/selenium_tests
                 cd /home/azureuser/selenium_tests
                 python3 -m pip install --upgrade pip
