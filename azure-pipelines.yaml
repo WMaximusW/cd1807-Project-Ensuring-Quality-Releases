@@ -37,8 +37,8 @@ stages:
               workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
               backendServiceArm: '$(azureServiceConnectionId)'
               backendAzureRmResourceGroupName: '$(resource_group_name)'
-              backendAzureRmStorageAccountName: 'tfstate39711214'
-              backendAzureRmContainerName: 'tfstate'
+              backendAzureRmStorageAccountName: '$(storageAccountName)'
+              backendAzureRmContainerName: '$(containerName)'
               backendAzureRmKey: 'test.terraform.tfstate'
               commandOptions: '-input=false -backend-config="client_id=$(client_id)" -backend-config="client_secret=$(client_secret)" -backend-config="tenant_id=$(tenant_id)" -backend-config="subscription_id=$(subscription_id)"'
           
