@@ -17,19 +17,20 @@ stages:
   - job: BuildInfrastructure
     steps:
     # Install Terraform on the pipeline agent 
+
     - task: TerraformInstaller@0
       displayName: 'Terraform installation'
       inputs:
         terraformVersion: '1.2.9'
     
     # Run Terraform Init
-    - task: TerraformTaskV3@3
-      displayName: 'Terraform init'
+    - task: TerraformTaskV4@4
       inputs:
         provider: 'azurerm'
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
-        backendServiceArm: '$(azureServiceConnectionId)'
+        backendAzureRmUseEnvironmentVariablesForAuthentication: true
+        backendAzureRmUseEntraIdForAuthentication: true
+        backendServiceArm: 'trungnq72-udacity-project3-service-connection-id'
         backendAzureRmResourceGroupName: 'trungnq72-resource_group_project_3'
         backendAzureRmStorageAccountName: 'tfstate39711214'
         backendAzureRmContainerName: 'tfstate'
