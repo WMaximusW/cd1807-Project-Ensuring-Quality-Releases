@@ -6,63 +6,59 @@ trigger:
 pool: TrungNQ72-Udacity-Project3-SelfHost
 
 variables:
-  python_version: '3.7.6'
-  azureServiceConnectionId: 'trungnq72-udacity-project3-service-connection-id'
-  projectRoot: $(System.DefaultWorkingDirectory)
-  environmentName: 'test'
+- group: MyTerraformVars
 
 stages:
-- stage: Build
-  jobs:
-  - job: BuildInfrastructure
-    steps:
-    # Install Terraform on the pipeline agent 
+  - stage: Build
+    jobs:
+      - job: BuildInfrastructure
+        steps:
+          # Install Terraform on the pipeline agent 
+          - task: TerraformInstaller@0
+            displayName: 'Terraform installation'
+            inputs:
+              terraformVersion: '1.2.9'
+          
+          # Run Terraform Init
+          - task: TerraformTaskV4@4
+            displayName: 'Terraform init'
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
+              backendAzureRmUseEnvironmentVariablesForAuthentication: true
+              backendAzureRmUseEntraIdForAuthentication: true
+              backendServiceArm: 'trungnq72-udacity-project3-service-connection-id'
+              backendAzureRmResourceGroupName: 'trungnq72-resource_group_project_3'
+              backendAzureRmStorageAccountName: 'tfstate39711214'
+              backendAzureRmContainerName: 'tfstate'
+              backendAzureRmKey: 'test.terraform.tfstate'
+              commandOptions: '-input=false'
 
-    - task: TerraformInstaller@0
-      displayName: 'Terraform installation'
-      inputs:
-        terraformVersion: '1.2.9'
-    
-    # Run Terraform Init
-    - task: TerraformTaskV4@4
-      displayName: 'Terraform init'
-      inputs:
-        provider: 'azurerm'
-        command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
-        backendAzureRmUseEnvironmentVariablesForAuthentication: true
-        backendAzureRmUseEntraIdForAuthentication: true
-        backendServiceArm: 'trungnq72-udacity-project3-service-connection-id'
-        backendAzureRmResourceGroupName: 'trungnq72-resource_group_project_3'
-        backendAzureRmStorageAccountName: 'tfstate39711214'
-        backendAzureRmContainerName: 'tfstate'
-        backendAzureRmKey: 'test.terraform.tfstate'
-        commandOptions: '-input=false'
+          # Run Terraform Validate    
+          - task: TerraformTaskV4@4
+            displayName: 'Terraform validate'
+            inputs:
+              provider: 'azurerm'
+              command: 'validate'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
 
-    # Run Terraform Validate    
-    - task: TerraformTaskV4@4
-      displayName: 'Terraform validate'
-      inputs:
-        provider: 'azurerm'
-        command: 'validate'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
+          # Run Terraform Apply
+          - task: TerraformTaskV4@4
+            displayName: 'Terraform apply'
+            inputs:
+              provider: 'azurerm'
+              command: 'apply'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
+              environmentServiceNameAzureRM: 'trungnq72-udacity-project3-service-connection-id'
+              commandOptions: '-input=false -auto-approve'
 
-    # Run Terraform Apply
-    - task: TerraformTaskV3@3
-      displayName: 'Terraform apply'
-      inputs:
-        provider: 'azurerm'
-        command: 'apply'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
-        environmentServiceNameAzureRM: '$(azureServiceConnectionId)'
-        commandOptions: '-input=false -var-file=$(tfvars.secureFilePath) -auto-approve'
-
-    # Destroy the resources in Azure
-    - task: TerraformTaskV3@3
-      displayName: 'Terraform destroy'
-      inputs:
-        provider: 'azurerm'
-        command: 'destroy'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
-        environmentServiceNameAzureRM: '$(azureServiceConnectionId)'
-        commandOptions: '-var-file=$(tfvars.secureFilePath) -auto-approve'
+          # Destroy the resources in Azure
+          - task: TerraformTaskV4@4
+            displayName: 'Terraform destroy'
+            inputs:
+              provider: 'azurerm'
+              command: 'destroy'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
+              environmentServiceNameAzureRM: 'trungnq72-udacity-project3-service-connection-id'
+              commandOptions: '-auto-approve'
