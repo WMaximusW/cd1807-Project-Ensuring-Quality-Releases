@@ -144,11 +144,11 @@ stages:
                 python3 -m pip install --upgrade pip
                 python3 -m pip install -r requirements.txt
                 export PATH="$PATH:/usr/bin"
-                python3 login.py | tee selenium_test_output.log
+                python3 login.py > selenium_test_output.log
           
           # Publish the log file as an artifact directly from the VM
           - task: PublishPipelineArtifact@1
             displayName: 'Publish Selenium Test Log'
             inputs:
               artifactName: 'selenium-log'
-              targetPath: '/home/azureuser/selenium_tests/selenium_test_output.log'  # Log file on the VM
+              targetPath: '$(System.DefaultWorkingDirectory)/selenium_tests/selenium_test_output.log'  # Log file on the VM
