@@ -28,6 +28,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
         backendAzureRmUseEnvironmentVariablesForAuthentication: true
         backendAzureRmUseEntraIdForAuthentication: true
         backendServiceArm: 'trungnq72-udacity-project3-service-connection-id'
@@ -42,6 +43,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'validate'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
 
     # Run Terraform Apply
     - task: TerraformTaskV3@3
