@@ -8,13 +8,10 @@ import os
 def login(user, password):
     print('Starting the browser...')
     
-    # Set the chromedriver path
-    chromedriver_path = "/home/azureuser/.local/lib/python3.6/site-packages/chromedriver_py/chromedriver_linux64"
-    
     options = ChromeOptions()
     options.add_argument("--headless")  # Run Chrome in headless mode
     
-    driver = webdriver.Chrome(executable_path=chromedriver_path, options=options)
+    driver = webdriver.Chrome(executable_path=binary_path, options=options)
     
     print('Browser started successfully. Navigating to the demo page to login.')
     driver.get('https://www.saucedemo.com/')
