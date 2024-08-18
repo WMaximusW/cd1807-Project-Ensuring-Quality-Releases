@@ -146,13 +146,14 @@ stages:
                 export PATH="$PATH:/usr/bin"
                 python3 login.py > selenium_test_output.log
 
-          - task: PublishTestResults@2
-            displayName: 'Publish Selenium Test Results'
+          # Publish the log file as an artifact directly from the VM
+          - task: PublishPipelineArtifact@1
+            displayName: 'Publish Selenium Test Log'
             inputs:
-              testResultsFiles: '/home/azureuser/selenium_tests/selenium_test_output.log'
-              testRunTitle: 'UI Selenium Test Results'
+              artifactName: 'selenium-log'
+              targetPath: '/home/azureuser/selenium_tests/selenium_test_output.log'
 
-      - job: RunPostmanTests
+    - job: RunPostmanTests
         steps:
           - checkout: self
             clean: true
