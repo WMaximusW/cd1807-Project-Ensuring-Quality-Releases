@@ -1,102 +1,105 @@
 {
-    "info": {
-        "_postman_id": "d457a8b1-cc78-4c3a-8b6a-f5c8a8d7f621",
-        "name": "Regression Test Suite",
-        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-    },
-    "item": [
-        {
-            "name": "Create Author - Regression",
-            "event": [
-                {
-                    "listen": "test",
-                    "script": {
-                        "exec": [
-                            "pm.test(\"Status code is 200\", function () {",
-                            "    pm.response.to.have.status(200);",
-                            "});",
-                            "",
-                            "pm.test(\"Check response contains firstName\", function () {",
-                            "    var jsonData = pm.response.json();",
-                            "    pm.expect(jsonData.firstName).to.eql(\"John\");",
-                            "});"
-                        ],
-                        "type": "text/javascript"
-                    }
-                }
-            ],
-            "request": {
-                "method": "POST",
-                "header": [
-                    {
-                        "key": "Content-Type",
-                        "value": "application/json"
-                    }
-                ],
-                "body": {
-                    "mode": "raw",
-                    "raw": "{\n    \"id\": 0,\n    \"idBook\": 0,\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\"\n}",
-                    "options": {
-                        "raw": {
-                            "language": "json"
-                        }
-                    }
-                },
-                "url": {
-                    "raw": "https://fakerestapi.azurewebsites.net/api/v1/Authors",
-                    "protocol": "https",
-                    "host": [
-                        "fakerestapi",
-                        "azurewebsites",
-                        "net"
-                    ],
-                    "path": [
-                        "api",
-                        "v1",
-                        "Authors"
-                    ]
-                }
-            },
-            "response": []
-        },
-        {
-            "name": "Get All Authors - Regression",
-            "event": [
-                {
-                    "listen": "test",
-                    "script": {
-                        "exec": [
-                            "pm.test(\"Status code is 200\", function () {",
-                            "    pm.response.to.have.status(200);",
-                            "});",
-                            "",
-                            "pm.test(\"Response time is less than 200ms\", function () {",
-                            "    pm.expect(pm.response.responseTime).to.be.below(200);",
-                            "});"
-                        ],
-                        "type": "text/javascript"
-                    }
-                }
-            ],
-            "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                    "raw": "https://fakerestapi.azurewebsites.net/api/v1/Authors",
-                    "protocol": "https",
-                    "host": [
-                        "fakerestapi",
-                        "azurewebsites",
-                        "net"
-                    ],
-                    "path": [
-                        "api",
-                        "v1",
-                        "Authors"
-                    ]
-                }
-            },
-            "response": []
-        }
-    ]
+	"info": {
+		"_postman_id": "637d99ae-5d72-4d43-adf7-e450d1353663",
+		"name": "Regression Test Suite",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1951499",
+		"_collection_link": "https://crimson-shadow-8264.postman.co/workspace/TAK~723e4898-00ec-4ab1-8ddc-986e315d86e8/collection/1951499-637d99ae-5d72-4d43-adf7-e450d1353663?action=share&source=collection_link&creator=1951499"
+	},
+	"item": [
+		{
+			"name": "Create Author - Regression",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Check response contains firstName\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.firstName).to.eql(\"John\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"uuid": "a0bc277c-e706-4b96-9361-8ba7bd9f0527"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": 0,\n    \"idBook\": 0,\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://fakerestapi.azurewebsites.net/api/v1/Authors",
+					"protocol": "https",
+					"host": [
+						"fakerestapi",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Authors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Authors - Regression",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://fakerestapi.azurewebsites.net/api/v1/Authors",
+					"protocol": "https",
+					"host": [
+						"fakerestapi",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Authors"
+					]
+				}
+			},
+			"response": []
+		}
+	]
 }
