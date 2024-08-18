@@ -146,13 +146,14 @@ stages:
                 export PATH="$PATH:/usr/bin"
                 python3 login.py > selenium_test_output.log
 
-          # Copy the log file from the VM to the Azure DevOps agent
-          - task: SCP@0
-            displayName: 'Copy Log File from VM'
+          # SSH task to download the log file
+          - task: SSH@0
+            displayName: 'Download Log File from VM'
             inputs:
               sshEndpoint: '$(sshEndpoint)'
-              sourcePath: '/home/azureuser/selenium_tests/selenium_test_output.log'
-              targetPath: '$(Build.ArtifactStagingDirectory)/selenium_test_output.log'
+              runOptions: 'inline'
+              inline: |
+                scp azureuser@$(sshEndpoint):/tmp/selenium_test_output.log $(Build.ArtifactStagingDirectory)/selenium_test_output.log
 
           # Publish the log file as a build artifact
           - task: PublishBuildArtifacts@1
