@@ -84,11 +84,10 @@ stages:
               PathtoPublish: '$(Build.ArtifactStagingDirectory)/selenium_tests.zip'
               ArtifactName: 'selenium-tests'
             
-  
   - stage: Deploy
     dependsOn: Build
     jobs:
-      - job: DeployToAzure
+      - job: DeployWebAppToAzure
         steps:
           # Download the published artifact
           - task: DownloadPipelineArtifact@2
@@ -105,7 +104,8 @@ stages:
               appName: 'trungnq72-project3-AppService'
               package: '$(Pipeline.Workspace)/webapp.zip'
               deployToSlotOrASE: false   
-
+      - job: DeploySeleniumToVM
+        steps:
           # Download the artifact
           - task: DownloadPipelineArtifact@2
             displayName: 'Download Selenium Test Suite Artifact' 
@@ -120,7 +120,7 @@ stages:
               sourceFolder: '$(Pipeline.Workspace)'
               contents: 'selenium_tests.zip'
               targetFolder: '/home/azureuser/'
-  
+          
   - stage: Test
     dependsOn: Deploy
     jobs:
@@ -154,6 +154,9 @@ stages:
 
       - job: RunPostmanTests
         steps:
+          - checkout: self
+            clean: true
+
           - script: |
               npm install -g newman
             displayName: 'Install Newman'
