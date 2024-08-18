@@ -13,13 +13,41 @@ def login(user, password):
     
     driver = webdriver.Chrome(executable_path=binary_path, options=options)
     
-    print('Browser started successfully. Navigating to the demo page to login.')
+     print('Browser started successfully. Navigating to the demo page to login.')
     driver.get('https://www.saucedemo.com/')
-
+    
     # Perform login
-    driver.find_element_by_id('user-name').send_keys(user)
-    driver.find_element_by_id('password').send_keys(password)
-    driver.find_element_by_id('login-button').click()
-    print('Login completed.')
+    driver.find_element(By.ID, 'user-name').send_keys(user)
+    driver.find_element(By.ID, 'password').send_keys(password)
+    driver.find_element(By.ID, 'login-button').click()
+    
+    # Verify login was successful
+    assert "inventory.html" in driver.current_url
+    print(f'Login successful with user: {user}')
+    
+    return driver
 
-login('standard_user', 'secret_sauce')
+def add_all_products_to_cart(driver):
+    print('Adding all products to cart...')
+    add_to_cart_buttons = driver.find_elements(By.CLASS_NAME, 'btn_inventory')
+    for button in add_to_cart_buttons:
+        button.click()
+    print(f'Added {len(add_to_cart_buttons)} products to cart.')  
+
+def remove_all_products_from_cart(driver):
+    print('Removing all products from cart...')
+    remove_buttons = driver.find_elements(By.CLASS_NAME, 'btn_secondary')
+    for button in remove_buttons:
+        button.click()
+    print(f'Removed {len(remove_buttons)} products from cart.')
+
+def main():
+    driver = login('standard_user', 'secret_sauce')
+    
+    add_all_products_to_cart(driver)
+    remove_all_products_from_cart(driver)
+    
+    driver.quit()
+
+if __name__ == "__main__":
+    main()

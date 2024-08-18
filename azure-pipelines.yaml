@@ -146,23 +146,6 @@ stages:
                 export PATH="$PATH:/usr/bin"
                 python3 login.py > selenium_test_output.log
 
-          # SSH task to download the log file
-          - task: SSH@0
-            displayName: 'Download Log File from VM'
-            inputs:
-              sshEndpoint: '$(sshEndpoint)'
-              runOptions: 'inline'
-              inline: |
-                scp azureuser@$(sshEndpoint):/tmp/selenium_test_output.log "$(Build.ArtifactStagingDirectory)"/selenium_test_output.log
-
-          # Publish the log file as a build artifact
-          - task: PublishBuildArtifacts@1
-            displayName: 'Publish Selenium Test Log'
-            inputs:
-              path: '$(Build.ArtifactStagingDirectory)/selenium_test_output.log'
-              artifactName: 'SeleniumTestLog'
-              publishLocation: 'Container'
-
       - job: RunPostmanTests
         steps:
           - checkout: self
