@@ -153,7 +153,7 @@ stages:
               sshEndpoint: '$(sshEndpoint)'
               runOptions: 'inline'
               inline: |
-                scp azureuser@$(sshEndpoint):/tmp/selenium_test_output.log $(Build.ArtifactStagingDirectory)/selenium_test_output.log
+                scp azureuser@$(sshEndpoint):/tmp/selenium_test_output.log "$(Build.ArtifactStagingDirectory)"/selenium_test_output.log
 
           # Publish the log file as a build artifact
           - task: PublishBuildArtifacts@1
