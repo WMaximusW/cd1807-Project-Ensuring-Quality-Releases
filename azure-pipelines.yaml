@@ -161,13 +161,19 @@ stages:
               npm install -g newman
             displayName: 'Install Newman'
 
-          - script: |
-              newman run "$(Pipeline.Workspace)"/automatedtesting/postman/RegressionTestSuite.json -r cli,junit --reporter-junit-export="$(Pipeline.Workspace)"/postman_test_regression_results.xml
+          - task: CmdLine@2
             displayName: 'Run Postman Regression Test Suite'
+            inputs:
+              workingDirectory: '$(Pipeline.Workspace)/automatedtesting/postman'
+              script: |
+                newman run "RegressionTestSuite.json" -r cli,junit --reporter-junit-export="$(Pipeline.Workspace)/postman_test_regression_results.xml"
 
-          - script: |
-              newman run "$(Pipeline.Workspace)"/automatedtesting/postman/DataValidationTestSuite.json -r cli,junit --reporter-junit-export="$(Pipeline.Workspace)"/postman_test_data_validation_results.xml
-            displayName: 'Run Postman Data Validation Test Suite'
+          - task: CmdLine@2
+            displayName: 'Run Postman Regression Test Suite'
+            inputs:
+              workingDirectory: '$(Pipeline.Workspace)/automatedtesting/postman'
+              script: |
+                newman run "DataValidationTestSuite.json" -r cli,junit --reporter-junit-export="$(Pipeline.Workspace)/postman_test_data_validation_results.xml"
 
           - task: PublishTestResults@2
             displayName: 'Publish Postman Regression Test Results'
