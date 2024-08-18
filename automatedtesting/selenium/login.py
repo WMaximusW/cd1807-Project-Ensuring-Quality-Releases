@@ -2,6 +2,7 @@
 from selenium import webdriver
 from chromedriver_py import binary_path # this will get you the path variable
 from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.common.by import By  # Import the By class
 import os
 
 # Start the browser and login with standard_user
