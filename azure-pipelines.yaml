@@ -146,12 +146,22 @@ stages:
                 export PATH="$PATH:/usr/bin"
                 python3 login.py > selenium_test_output.log
 
-          # Publish the log file as an artifact directly from the VM
+          # Copy the log file from the VM to the pipeline's workspace
+          - task: CopyFilesOverSSH@0
+            displayName: 'Download Selenium Test Log from VM'
+            inputs:
+              sshEndpoint: '$(sshEndpoint)'
+              sourceFolder: '/home/azureuser/selenium_tests'
+              contents: 'selenium_test_output.log'
+              targetFolder: '$(Pipeline.Workspace)/selenium_tests'
+              cleanTargetFolder: false
+
+          # Publish the log file as an artifact
           - task: PublishPipelineArtifact@1
             displayName: 'Publish Selenium Test Log'
             inputs:
               artifactName: 'selenium-log'
-              targetPath: '/home/azureuser/selenium_tests/selenium_test_output.log'
+              targetPath: '$(Pipeline.Workspace)/selenium_tests/selenium_test_output.log'
 
       - job: RunPostmanTests
         steps:
