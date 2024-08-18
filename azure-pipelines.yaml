@@ -146,12 +146,15 @@ stages:
                 export PATH="$PATH:/usr/bin"
                 python3 login.py > selenium_test_output.log
           
-          - task: Bash@3
-            displayName: 'Download Selenium Test Log from VM'
+          - task: DownloadSecureFile@1
+            name: sshKey
             inputs:
-              targetType: 'inline'
-              script: |
-                scp -i C:\Users\wnguy\.ssh $(vm_ssh):/home/azureuser/selenium_tests/selenium_test_output.log "$(Build.ArtifactStagingDirectory)"/
+              secureFile: 'id_rsa'
+
+          - script: |
+              chmod 600 $(Agent.TempDirectory)/$(sshKey.secureFilePath)
+              scp -i $(Agent.TempDirectory)/$(sshKey.secureFilePath) $(vm_ssh):/home/azureuser/selenium_tests/selenium_test_output.log $(Build.ArtifactStagingDirectory)/
+            displayName: 'Download Selenium Test Log from VM'
 
           # Publish the log file as an artifact directly from the VM
           - task: PublishPipelineArtifact@1
