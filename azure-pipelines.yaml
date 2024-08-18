@@ -124,7 +124,7 @@ stages:
   - stage: Test
     dependsOn: Deploy
     jobs:
-      - job: RunTests
+      - job: RunSeleniumTests
         steps:
           # SSH into the VM and run the Selenium Test Suite
           - task: SSH@0
@@ -145,22 +145,12 @@ stages:
                 python3 -m pip install -r requirements.txt
                 export PATH="$PATH:/usr/bin"
                 python3 login.py > selenium_test_output.log
-          
-          #  # Download the Selenium Test Log from the VM
-          # - task: SSH@0
-          #   displayName: 'Download Selenium Test Log from VM'
-          #   inputs:
-          #     sshEndpoint: '$(sshEndpoint)'
-          #     runOptions: 'inline'
-          #     inline: |
-          #       scp -o StrictHostKeyChecking=no $(vm_ssh):/home/azureuser/selenium_tests/selenium_test_output.log "$(System.DefaultWorkingDirectory)"/selenium_test_output.log
 
-          # # Publish the log file as an artifact directly from the VM
-          # - task: PublishPipelineArtifact@1
-          #   displayName: 'Publish Selenium Test Log'
+          # - task: PublishTestResults@2
+          #   displayName: 'Publish Selenium Test Results'
           #   inputs:
-          #     artifactName: 'selenium-log'
-          #     targetPath: '"$(System.DefaultWorkingDirectory)"/selenium_test_output.log'  # Log file on the VM
+          #     testResultsFiles: '/home/azureuser/selenium_tests/selenium_test_output.log'
+          #     testRunTitle: 'UI Selenium Test Results'
 
       - job: RunPostmanTests
         steps:
@@ -169,21 +159,21 @@ stages:
             displayName: 'Install Newman'
 
           - script: |
-              newman run $(System.DefaultWorkingDirectory)/automatedtesting/postman/RegressionTestSuite.json -r cli,junit --reporter-junit-export=$(System.DefaultWorkingDirectory)/postman_test_regression_results.xml
+              newman run "$(System.DefaultWorkingDirectory)"/automatedtesting/postman/RegressionTestSuite.json -r cli,junit --reporter-junit-export="$(System.DefaultWorkingDirectory)"/postman_test_regression_results.xml
             displayName: 'Run Postman Regression Test Suite'
 
           - script: |
-              newman run $(System.DefaultWorkingDirectory)/automatedtesting/postman/DataValidationTestSuite.json -r cli,junit --reporter-junit-export=$(System.DefaultWorkingDirectory)/postman_test_data_validation_results.xml
+              newman run "$(System.DefaultWorkingDirectory)"/automatedtesting/postman/DataValidationTestSuite.json -r cli,junit --reporter-junit-export="$(System.DefaultWorkingDirectory)"/postman_test_data_validation_results.xml
             displayName: 'Run Postman Data Validation Test Suite'
 
           - task: PublishTestResults@2
             displayName: 'Publish Postman Regression Test Results'
             inputs:
-              testResultsFiles: '$(System.DefaultWorkingDirectory)/postman_test_regression_results.xml'
+              testResultsFiles: '"$(System.DefaultWorkingDirectory)"/postman_test_regression_results.xml'
               testRunTitle: 'Postman Regression Test Results'
 
           - task: PublishTestResults@2
             displayName: 'Publish Postman Data Validation Test Results'
             inputs:
-              testResultsFiles: '$(System.DefaultWorkingDirectory)/postman_test_data_validation_results.xml'
+              testResultsFiles: '"$(System.DefaultWorkingDirectory)"/postman_test_data_validation_results.xml'
               testRunTitle: 'Postman Regression Test Results'
