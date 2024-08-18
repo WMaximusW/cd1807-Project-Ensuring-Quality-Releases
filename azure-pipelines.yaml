@@ -161,3 +161,29 @@ stages:
           #   inputs:
           #     artifactName: 'selenium-log'
           #     targetPath: '"$(System.DefaultWorkingDirectory)"/selenium_test_output.log'  # Log file on the VM
+
+      - job: RunPostmanTests
+        steps:
+          - script: |
+              npm install -g newman
+            displayName: 'Install Newman'
+
+          - script: |
+              newman run $(System.DefaultWorkingDirectory)/automatedtesting/postman/RegressionTestSuite.json -r cli,junit --reporter-junit-export=$(System.DefaultWorkingDirectory)/postman_test_regression_results.xml
+            displayName: 'Run Postman Regression Test Suite'
+
+          - script: |
+              newman run $(System.DefaultWorkingDirectory)/automatedtesting/postman/DataValidationTestSuite.json -r cli,junit --reporter-junit-export=$(System.DefaultWorkingDirectory)/postman_test_data_validation_results.xml
+            displayName: 'Run Postman Data Validation Test Suite'
+
+          - task: PublishTestResults@2
+            displayName: 'Publish Postman Regression Test Results'
+            inputs:
+              testResultsFiles: '$(System.DefaultWorkingDirectory)/postman_test_regression_results.xml'
+              testRunTitle: 'Postman Regression Test Results'
+
+          - task: PublishTestResults@2
+            displayName: 'Publish Postman Data Validation Test Results'
+            inputs:
+              testResultsFiles: '$(System.DefaultWorkingDirectory)/postman_test_data_validation_results.xml'
+              testRunTitle: 'Postman Regression Test Results'
