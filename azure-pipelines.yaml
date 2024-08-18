@@ -152,7 +152,7 @@ stages:
               secureFile: 'id_rsa'
 
           - script: |
-              scp -i $(sshKey.secureFilePath) $(vm_ssh):/home/azureuser/selenium_tests/selenium_test_output.log "$(System.DefaultWorkingDirectory)"/
+              scp -i "$(sshKey.secureFilePath)" $(vm_ssh):/home/azureuser/selenium_tests/selenium_test_output.log "$(System.DefaultWorkingDirectory)"/
             displayName: 'Download Selenium Test Log from VM'
 
           # Publish the log file as an artifact directly from the VM
