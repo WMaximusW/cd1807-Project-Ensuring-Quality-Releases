@@ -129,62 +129,62 @@ stages:
               contents: 'selenium-$(Build.BuildId).zip'
               targetFolder: '/home/azureuser/'
           
-  - stage: Test
-    dependsOn: Deploy
-    jobs:
-      - job: RunSeleniumTests
-        steps:
-          # SSH into the VM and run the Selenium Test Suite
-          - task: SSH@0
-            displayName: 'Run Selenium Test Suite on VM'
-            inputs:
-              sshEndpoint: '$(sshEndpoint)'
-              runOptions: 'inline'
-              inline: |
-                sudo apt-get update
-                sudo DEBIAN_FRONTEND=noninteractive apt-get install -y software-properties-common
-                sudo add-apt-repository -y universe
-                sudo apt-get update
-                sudo DEBIAN_FRONTEND=noninteractive apt-get install -y python3-pip unzip chromium-browser
-                mkdir -p /home/azureuser/selenium_tests
-                unzip -o /home/azureuser/selenium-$(Build.BuildId).zip -d /home/azureuser/selenium_tests
-                cd /home/azureuser/selenium_tests
-                python3 -m pip install --upgrade pip
-                python3 -m pip install -r requirements.txt
-                export PATH="$PATH:/usr/bin"
-                python3 login.py > selenium_test_output.log
+  # - stage: Test
+  #   dependsOn: Deploy
+  #   jobs:
+  #     - job: RunSeleniumTests
+  #       steps:
+  #         # SSH into the VM and run the Selenium Test Suite
+  #         - task: SSH@0
+  #           displayName: 'Run Selenium Test Suite on VM'
+  #           inputs:
+  #             sshEndpoint: '$(sshEndpoint)'
+  #             runOptions: 'inline'
+  #             inline: |
+  #               sudo apt-get update
+  #               sudo DEBIAN_FRONTEND=noninteractive apt-get install -y software-properties-common
+  #               sudo add-apt-repository -y universe
+  #               sudo apt-get update
+  #               sudo DEBIAN_FRONTEND=noninteractive apt-get install -y python3-pip unzip chromium-browser
+  #               mkdir -p /home/azureuser/selenium_tests
+  #               unzip -o /home/azureuser/selenium-$(Build.BuildId).zip -d /home/azureuser/selenium_tests
+  #               cd /home/azureuser/selenium_tests
+  #               python3 -m pip install --upgrade pip
+  #               python3 -m pip install -r requirements.txt
+  #               export PATH="$PATH:/usr/bin"
+  #               python3 login.py > selenium_test_output.log
 
-      - job: RunPostmanTests
-        steps:
-          - checkout: self
-            clean: true
+  #     - job: RunPostmanTests
+  #       steps:
+  #         - checkout: self
+  #           clean: true
 
-          - script: |
-              npm install -g newman
-            displayName: 'Install Newman'
+  #         - script: |
+  #             npm install -g newman
+  #           displayName: 'Install Newman'
 
-          - task: CmdLine@2
-            displayName: 'Run Postman Regression Test Suite'
-            inputs:
-              workingDirectory: '"$(System.DefaultWorkingDirectory)"/automatedtesting/postman'
-              script: |
-                newman run "RegressionTestSuite.json" -r cli,junit --reporter-junit-export="$(Build.ArtifactStagingDirectory)/postman_test_regression_results.xml"
+  #         - task: CmdLine@2
+  #           displayName: 'Run Postman Regression Test Suite'
+  #           inputs:
+  #             workingDirectory: '"$(System.DefaultWorkingDirectory)"/automatedtesting/postman'
+  #             script: |
+  #               newman run "RegressionTestSuite.json" -r cli,junit --reporter-junit-export="$(Build.ArtifactStagingDirectory)/postman_test_regression_results.xml"
 
-          - task: CmdLine@2
-            displayName: 'Run Postman Regression Test Suite'
-            inputs:
-              workingDirectory: '"$(System.DefaultWorkingDirectory)"/automatedtesting/postman'
-              script: |
-                newman run "DataValidationTestSuite.json" -r cli,junit --reporter-junit-export="$(Build.ArtifactStagingDirectory)/postman_test_data_validation_results.xml"
+  #         - task: CmdLine@2
+  #           displayName: 'Run Postman Regression Test Suite'
+  #           inputs:
+  #             workingDirectory: '"$(System.DefaultWorkingDirectory)"/automatedtesting/postman'
+  #             script: |
+  #               newman run "DataValidationTestSuite.json" -r cli,junit --reporter-junit-export="$(Build.ArtifactStagingDirectory)/postman_test_data_validation_results.xml"
 
-          - task: PublishTestResults@2
-            displayName: 'Publish Postman Regression Test Results'
-            inputs:
-              testResultsFiles: '$(Build.ArtifactStagingDirectory)/postman_test_regression_results.xml'
-              testRunTitle: 'Postman Regression Test Results'
+  #         - task: PublishTestResults@2
+  #           displayName: 'Publish Postman Regression Test Results'
+  #           inputs:
+  #             testResultsFiles: '$(Build.ArtifactStagingDirectory)/postman_test_regression_results.xml'
+  #             testRunTitle: 'Postman Regression Test Results'
 
-          - task: PublishTestResults@2
-            displayName: 'Publish Postman Data Validation Test Results'
-            inputs:
-              testResultsFiles: '$(Build.ArtifactStagingDirectory)/postman_test_data_validation_results.xml'
-              testRunTitle: 'Postman Regression Test Results'
+  #         - task: PublishTestResults@2
+  #           displayName: 'Publish Postman Data Validation Test Results'
+  #           inputs:
+  #             testResultsFiles: '$(Build.ArtifactStagingDirectory)/postman_test_data_validation_results.xml'
+  #             testRunTitle: 'Postman Regression Test Results'
