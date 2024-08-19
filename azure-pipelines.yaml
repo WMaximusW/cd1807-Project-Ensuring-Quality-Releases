@@ -62,7 +62,7 @@ stages:
               rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter/fakerestapi'
               includeRootFolder: false
               archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/webapp-$(Build.BuildId).zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/webapp-$(Build.BuildId)'
               replaceExistingArchive: true
 
           # Publish the archived package as an artifact
@@ -81,7 +81,7 @@ stages:
               rootFolderOrFile: 'automatedtesting/selenium'
               includeRootFolder: false
               archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/selenium-$(Build.BuildId).zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/selenium-$(Build.BuildId)'
               replaceExistingArchive: true
           
            # Publish the Selenium Test Suite as a build artifact
@@ -147,7 +147,7 @@ stages:
                 sudo apt-get update
                 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y python3-pip unzip chromium-browser
                 mkdir -p /home/azureuser/selenium_tests
-                unzip -o /home/azureuser/selenium_tests.zip -d /home/azureuser/selenium_tests
+                unzip -o /home/azureuser/selenium-$(Build.BuildId).zip -d /home/azureuser/selenium_tests
                 cd /home/azureuser/selenium_tests
                 python3 -m pip install --upgrade pip
                 python3 -m pip install -r requirements.txt
@@ -166,14 +166,14 @@ stages:
           - task: CmdLine@2
             displayName: 'Run Postman Regression Test Suite'
             inputs:
-              workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
+              workingDirectory: '"$(System.DefaultWorkingDirectory)"/automatedtesting/postman'
               script: |
                 newman run "RegressionTestSuite.json" -r cli,junit --reporter-junit-export="$(Build.ArtifactStagingDirectory)/postman_test_regression_results.xml"
 
           - task: CmdLine@2
             displayName: 'Run Postman Regression Test Suite'
             inputs:
-              workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
+              workingDirectory: '"$(System.DefaultWorkingDirectory)"/automatedtesting/postman'
               script: |
                 newman run "DataValidationTestSuite.json" -r cli,junit --reporter-junit-export="$(Build.ArtifactStagingDirectory)/postman_test_data_validation_results.xml"
 
