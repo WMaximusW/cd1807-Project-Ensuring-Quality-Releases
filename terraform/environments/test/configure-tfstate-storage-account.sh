@@ -1,11 +1,11 @@
 #!/bin/bash
-RESOURCE_GROUP_NAME="trungnq72-resource_group_project_3"
-STORAGE_ACCOUNT_NAME="tfstate$RANDOM$RANDOM"
-CONTAINER_NAME="tfstate"
+RESOURCE_GROUP_NAME="trungnq72-p3-resource-group"
+STORAGE_ACCOUNT_NAME="trungnq72p3storage"
+CONTAINER_NAME="trungnq72p3container"
 
 # This command is not needed in the Udacity provided Azure account. 
 # Create resource group
-# az group create --name $RESOURCE_GROUP_NAME --location eastus
+az group create --name $RESOURCE_GROUP_NAME --location eastus
 
 # Create storage account with required tags
 az storage account create \

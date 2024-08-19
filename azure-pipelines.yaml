@@ -1,4 +1,4 @@
-name: Azure Pipelines
+name: TrungNQ72-Pipeline-$(Date:yyyyMMddHHmmss)$(Rev:.r)
 
 trigger:
 - main
@@ -9,9 +9,9 @@ variables:
   - group: MyTerraformVars  # Reference your variable group here
 
 stages:
-  - stage: Build
+  - stage: Infrastructure
     jobs:
-      - job: BuildInfrastructure
+      - job: Terraform
         steps:
           # Install Terraform on the pipeline agent 
           - task: TerraformInstaller@0
@@ -50,23 +50,30 @@ stages:
               environmentServiceNameAzureRM: '$(azureServiceConnectionId)'
               commandOptions: '-input=false -auto-approve -var="tenant_id=$(tenant_id)" -var="subscription_id=$(subscription_id)" -var="client_id=$(client_id)" -var="client_secret=$(client_secret)" -var="public_key=$(public_key)"'
           
-          # Archive the web package
+  - stage: Build
+    dependsOn: Infrastructure
+    jobs:
+      - job: Archive fakerestapi web package
+        steps:
+      # Archive the web package
           - task: ArchiveFiles@2
             displayName: 'Archive fakerestapi web package'
             inputs:
               rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter/fakerestapi'
               includeRootFolder: false
               archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/webapp.zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-webapp.zip'
               replaceExistingArchive: true
 
           # Publish the archived package as an artifact
           - task: PublishBuildArtifacts@1
             displayName: 'Publish Artifact: webapp'
             inputs:
-              PathtoPublish: '$(Build.ArtifactStagingDirectory)/webapp.zip'
-              ArtifactName: 'webapp'
-
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-webapp.zip'
+              ArtifactName: '$(Build.BuildId)-webapp'
+      
+      - job: Archive Selenium Test Suite
+        steps:
           # Archive the Selenium Test Suite
           - task: ArchiveFiles@2
             displayName: 'Archive Selenium Test Suite'
@@ -74,16 +81,16 @@ stages:
               rootFolderOrFile: 'automatedtesting/selenium'
               includeRootFolder: false
               archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/selenium_tests.zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-selenium.zip'
               replaceExistingArchive: true
           
            # Publish the Selenium Test Suite as a build artifact
           - task: PublishBuildArtifacts@1
             displayName: 'Publish Selenium Test Suite Artifact'
             inputs:
-              PathtoPublish: '$(Build.ArtifactStagingDirectory)/selenium_tests.zip'
-              ArtifactName: 'selenium-tests'
-            
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-selenium.zip'
+              ArtifactName: '$(Build.BuildId)-selenium'
+
   - stage: Deploy
     dependsOn: Build
     jobs:
@@ -93,7 +100,7 @@ stages:
           - task: DownloadPipelineArtifact@2
             displayName: 'Download webapp artifact'
             inputs:
-              artifact: 'webapp'
+              artifact: '$(Build.BuildId)-webapp'
 
           # Deploy the archived package to Azure Web App
           - task: AzureWebApp@1
@@ -102,15 +109,16 @@ stages:
               azureSubscription: '$(azureServiceConnectionId)'
               appType: 'webApp'
               appName: 'trungnq72-project3-AppService'
-              package: '$(Pipeline.Workspace)/webapp.zip'
+              package: '$(Pipeline.Workspace)/$(Build.BuildId)-webapp.zip'
               deployToSlotOrASE: false   
+
       - job: DeploySeleniumToVM
         steps:
           # Download the artifact
           - task: DownloadPipelineArtifact@2
             displayName: 'Download Selenium Test Suite Artifact' 
             inputs:
-              artifact: 'selenium-tests'
+              artifact: '$(Build.BuildId)-selenium'
 
           # Copy the Selenium Test Suite to the VM
           - task: CopyFilesOverSSH@0
@@ -118,7 +126,7 @@ stages:
             inputs:
               sshEndpoint: '$(sshEndpoint)'
               sourceFolder: '$(Pipeline.Workspace)'
-              contents: 'selenium_tests.zip'
+              contents: '$(Build.BuildId)-selenium.zip'
               targetFolder: '/home/azureuser/'
           
   - stage: Test

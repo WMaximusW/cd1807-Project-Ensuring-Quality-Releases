@@ -6,8 +6,8 @@ tenant_id = ""
 
 # Resource Group/Location
 location = "eastus"
-resource_group_name = "trungnq72-resource_group_project_3"
-application_type = "trungnq72-project3"
+resource_group_name = "trungnq72-p3-resource-group"
+application_type = "trungnq72-p3-application"
 
 # Network
 virtual_network_name = "trungnq72-project3-vnet"

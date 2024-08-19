@@ -30,7 +30,7 @@ variable "location" {
 variable "resource_group_name" {
   description = "The name of the resource group"
   type        = string
-  default     = "trungnq72-resource_group_project_3"
+  default     = "trungnq72-p3-resource-group"
 }
 
 variable "application_type" {
