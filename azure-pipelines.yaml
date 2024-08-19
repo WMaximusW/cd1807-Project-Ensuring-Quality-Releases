@@ -108,7 +108,7 @@ stages:
             inputs:
               azureSubscription: '$(azureServiceConnectionId)'
               appType: 'webApp'
-              appName: 'trungnq72-project3-AppService'
+              appName: 'trungnq72-p3-application-AppService'
               package: '$(Pipeline.Workspace)/webapp-$(Build.BuildId).zip'
               deployToSlotOrASE: false   
 
