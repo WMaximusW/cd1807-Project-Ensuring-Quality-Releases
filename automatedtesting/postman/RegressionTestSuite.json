@@ -46,10 +46,10 @@
 					}
 				},
 				"url": {
-					"raw": "https://fakerestapi.azurewebsites.net/api/v1/Authors",
+					"raw": "https://trungnq72-p3-application-appservice.azurewebsites.net/api/v1/Authors",
 					"protocol": "https",
 					"host": [
-						"fakerestapi",
+						"trungnq72-p3-application-appservice",
 						"azurewebsites",
 						"net"
 					],
@@ -85,10 +85,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://fakerestapi.azurewebsites.net/api/v1/Authors",
+					"raw": "https://trungnq72-p3-application-appservice.azurewebsites.net/api/v1/Authors",
 					"protocol": "https",
 					"host": [
-						"fakerestapi",
+						"trungnq72-p3-application-appservice",
 						"azurewebsites",
 						"net"
 					],
