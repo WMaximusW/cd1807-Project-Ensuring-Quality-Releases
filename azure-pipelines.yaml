@@ -72,24 +72,24 @@ stages:
               PathtoPublish: '$(Build.ArtifactStagingDirectory)/webapp-$(Build.BuildId).zip'
               ArtifactName: 'webapp-$(Build.BuildId)'
       
-      - job: Archive_Selenium_Test_Suite
-        steps:
-          # Archive the Selenium Test Suite
-          - task: ArchiveFiles@2
-            displayName: 'Archive Selenium Test Suite'
-            inputs:
-              rootFolderOrFile: 'automatedtesting/selenium'
-              includeRootFolder: false
-              archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/selenium-$(Build.BuildId)'
-              replaceExistingArchive: true
+      # - job: Archive_Selenium_Test_Suite
+      #   steps:
+      #     # Archive the Selenium Test Suite
+      #     - task: ArchiveFiles@2
+      #       displayName: 'Archive Selenium Test Suite'
+      #       inputs:
+      #         rootFolderOrFile: 'automatedtesting/selenium'
+      #         includeRootFolder: false
+      #         archiveType: 'zip'
+      #         archiveFile: '$(Build.ArtifactStagingDirectory)/selenium-$(Build.BuildId)'
+      #         replaceExistingArchive: true
           
-           # Publish the Selenium Test Suite as a build artifact
-          - task: PublishBuildArtifacts@1
-            displayName: 'Publish Selenium Test Suite Artifact'
-            inputs:
-              PathtoPublish: '$(Build.ArtifactStagingDirectory)/selenium-$(Build.BuildId).zip'
-              ArtifactName: 'selenium-$(Build.BuildId)'
+      #      # Publish the Selenium Test Suite as a build artifact
+      #     - task: PublishBuildArtifacts@1
+      #       displayName: 'Publish Selenium Test Suite Artifact'
+      #       inputs:
+      #         PathtoPublish: '$(Build.ArtifactStagingDirectory)/selenium-$(Build.BuildId).zip'
+      #         ArtifactName: 'selenium-$(Build.BuildId)'
 
   - stage: Deploy
     dependsOn: Build
@@ -112,22 +112,22 @@ stages:
               package: '$(Pipeline.Workspace)/webapp-$(Build.BuildId).zip'
               deployToSlotOrASE: false   
 
-      - job: DeploySeleniumToVM
-        steps:
-          # Download the artifact
-          - task: DownloadPipelineArtifact@2
-            displayName: 'Download Selenium Test Suite Artifact' 
-            inputs:
-              artifact: 'selenium-$(Build.BuildId)'
+      # - job: DeploySeleniumToVM
+      #   steps:
+      #     # Download the artifact
+      #     - task: DownloadPipelineArtifact@2
+      #       displayName: 'Download Selenium Test Suite Artifact' 
+      #       inputs:
+      #         artifact: 'selenium-$(Build.BuildId)'
 
-          # Copy the Selenium Test Suite to the VM
-          - task: CopyFilesOverSSH@0
-            displayName: 'Upload Selenium Test Suite to VM'
-            inputs:
-              sshEndpoint: '$(sshEndpoint)'
-              sourceFolder: '$(Pipeline.Workspace)'
-              contents: 'selenium-$(Build.BuildId).zip'
-              targetFolder: '/home/azureuser/'
+      #     # Copy the Selenium Test Suite to the VM
+      #     - task: CopyFilesOverSSH@0
+      #       displayName: 'Upload Selenium Test Suite to VM'
+      #       inputs:
+      #         sshEndpoint: '$(sshEndpoint)'
+      #         sourceFolder: '$(Pipeline.Workspace)'
+      #         contents: 'selenium-$(Build.BuildId).zip'
+      #         targetFolder: '/home/azureuser/'
           
   # - stage: Test
   #   dependsOn: Deploy
