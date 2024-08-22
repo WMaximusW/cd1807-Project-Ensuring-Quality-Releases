@@ -192,12 +192,12 @@ stages:
         steps:
           # Run JMeter Stress Test
           - script: |
-              "C:/Users/wnguy/OneDrive/Learning/Udacity/Azure devops/apache-jmeter-5.6.3/apache-jmeter-5.6.3/bin/"jmeter -n -t automatedtesting/jmeter/StressTest.jmx -l log/jmeter/stress-test-result.csv -e -f -o log/jmeter/stress-test-html-report -j log/jmeter/jmeter-stress-test.log
+              E:/Learning/apache-jmeter-5.6.3/apache-jmeter-5.6.3/bin/jmeter -n -t automatedtesting/jmeter/StressTest.jmx -l log/jmeter/stress-test-result.csv -e -f -o log/jmeter/stress-test-html-report -j log/jmeter/jmeter-stress-test.log
             displayName: 'JMeter Stress Test'
 
           # Run JMeter Endurance Test
           - script: |
-              "C:/Users/wnguy/OneDrive/Learning/Udacity/Azure devops/apache-jmeter-5.6.3/apache-jmeter-5.6.3/bin/"jmeter -n -t automatedtesting/jmeter/EnduranceTest.jmx -l log/jmeter/endurance-test-result.csv -e -f -o log/jmeter/endurance-test-html-report -j log/jmeter/jmeter-endurance-test.log
+              E:/Learning/apache-jmeter-5.6.3/apache-jmeter-5.6.3/bin/jmeter -n -t automatedtesting/jmeter/EnduranceTest.jmx -l log/jmeter/endurance-test-result.csv -e -f -o log/jmeter/endurance-test-html-report -j log/jmeter/jmeter-endurance-test.log
             displayName: 'JMeter Endurance Test'
 
           # Archive the Stress Test Results
