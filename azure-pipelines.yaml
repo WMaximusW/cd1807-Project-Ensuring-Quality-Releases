@@ -153,12 +153,13 @@ stages:
                 python3 -m pip install -r requirements.txt
                 export PATH="$PATH:/usr/bin"
                 python3 login.py > selenium_test_output.log
-                sudo mkdir -p /var/log/selenium
-                sudo chmod 664 /var/log/selenium
-                sudo mv selenium_test_output.log /var/log/selenium
-                cd "$(System.DefaultWorkingDirectory)"
-                mkdir -p /selenium/logs
-                sudo cp /var/log/selenium/selenium_test_output.log /selenium/logs
+          
+          - task: CopyFilesOverSSH@0
+            inputs:
+              sshEndpoint: '$(sshEndpoint)'
+              sourceFolder: '/home/azureuser/selenium_logs'
+              targetFolder: '$(Build.ArtifactStagingDirectory)/selenium_logs'
+              cleanTargetFolder: false
 
           - task: PublishPipelineArtifact@1
             displayName: 'Publish Selenium Logs'
