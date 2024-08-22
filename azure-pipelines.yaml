@@ -65,12 +65,12 @@ stages:
               archiveFile: '$(Build.ArtifactStagingDirectory)/webapp-$(Build.BuildId)'
               replaceExistingArchive: true
 
-      #     # Publish the archived package as an artifact
-      #     - task: PublishBuildArtifacts@1
-      #       displayName: 'Publish Artifact: webapp'
-      #       inputs:
-      #         PathtoPublish: '$(Build.ArtifactStagingDirectory)/webapp-$(Build.BuildId).zip'
-      #         ArtifactName: 'webapp-$(Build.BuildId)'
+          # Publish the archived package as an artifact
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish Artifact: webapp'
+            inputs:
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)/webapp-$(Build.BuildId).zip'
+              ArtifactName: 'webapp-$(Build.BuildId)'
       
       # - job: Archive_Selenium_Test_Suite
       #   steps:
@@ -102,15 +102,15 @@ stages:
             inputs:
               artifact: 'webapp-$(Build.BuildId)'
 
-      #     # Deploy the archived package to Azure Web App
-      #     - task: AzureWebApp@1
-      #       displayName: 'Deploy to Azure Web App'
-      #       inputs:
-      #         azureSubscription: '$(azureServiceConnectionId)'
-      #         appType: 'webApp'
-      #         appName: 'trungnq72-p3-application-AppService'
-      #         package: '$(Pipeline.Workspace)/webapp-$(Build.BuildId).zip'
-      #         deployToSlotOrASE: false   
+          # Deploy the archived package to Azure Web App
+          - task: AzureWebApp@1
+            displayName: 'Deploy to Azure Web App'
+            inputs:
+              azureSubscription: '$(azureServiceConnectionId)'
+              appType: 'webApp'
+              appName: 'trungnq72-p3-application-AppService'
+              package: '$(Pipeline.Workspace)/webapp-$(Build.BuildId).zip'
+              deployToSlotOrASE: false   
 
       # - job: DeploySeleniumToVM
       #   steps:
