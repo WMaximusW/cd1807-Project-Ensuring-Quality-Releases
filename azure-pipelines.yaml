@@ -168,14 +168,14 @@ stages:
             inputs:
               workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
               script: |
-                newman run "RegressionTestSuite.json" -r 'cli,junit' --reporter-junit-export=$(Build.ArtifactStagingDirectory)/postman_test_regression_results.xml
+                E:/Learning/node_modules/.bin/newman run "RegressionTestSuite.json" -r 'cli,junit' --reporter-junit-export=$(Build.ArtifactStagingDirectory)/postman_test_regression_results.xml
 
           - task: CmdLine@2
             displayName: 'Run Postman Regression Test Suite'
             inputs:
               workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
               script: |
-                newman run "DataValidationTestSuite.json" -r 'cli,junit' --reporter-junit-export=$(Build.ArtifactStagingDirectory)/postman_test_data_validation_results.xml
+                E:/Learning/node_modules/.bin/newman run "DataValidationTestSuite.json" -r 'cli,junit' --reporter-junit-export=$(Build.ArtifactStagingDirectory)/postman_test_data_validation_results.xml
 
           - task: PublishTestResults@2
             displayName: 'Publish Postman Regression Test Results'
