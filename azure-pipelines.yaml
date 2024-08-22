@@ -130,7 +130,7 @@ stages:
       #         targetFolder: '/home/azureuser/'
           
   - stage: Test
-    dependsOn: Deploy
+    # dependsOn: Deploy
     jobs:
       # - job: RunSeleniumTests
       #   steps:
