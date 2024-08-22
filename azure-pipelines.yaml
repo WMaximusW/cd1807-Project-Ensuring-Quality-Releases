@@ -112,48 +112,59 @@ stages:
               package: '$(Pipeline.Workspace)/webapp-$(Build.BuildId).zip'
               deployToSlotOrASE: false   
 
-      # - job: DeploySeleniumToVM
-      #   steps:
-      #     # Download the artifact
-      #     - task: DownloadPipelineArtifact@2
-      #       displayName: 'Download Selenium Test Suite Artifact' 
-      #       inputs:
-      #         artifact: 'selenium-$(Build.BuildId)'
+      - job: DeploySeleniumToVM
+        steps:
+          # Download the artifact
+          - task: DownloadPipelineArtifact@2
+            displayName: 'Download Selenium Test Suite Artifact' 
+            inputs:
+              artifact: 'selenium-$(Build.BuildId)'
 
-      #     # Copy the Selenium Test Suite to the VM
-      #     - task: CopyFilesOverSSH@0
-      #       displayName: 'Upload Selenium Test Suite to VM'
-      #       inputs:
-      #         sshEndpoint: '$(sshEndpoint)'
-      #         sourceFolder: '$(Pipeline.Workspace)'
-      #         contents: 'selenium-$(Build.BuildId).zip'
-      #         targetFolder: '/home/azureuser/'
+          # Copy the Selenium Test Suite to the VM
+          - task: CopyFilesOverSSH@0
+            displayName: 'Upload Selenium Test Suite to VM'
+            inputs:
+              sshEndpoint: '$(sshEndpoint)'
+              sourceFolder: '$(Pipeline.Workspace)'
+              contents: 'selenium-$(Build.BuildId).zip'
+              targetFolder: '/home/azureuser/'
           
   - stage: Test
     dependsOn: Deploy
     jobs:
-  #     - job: RunSeleniumTests
-  #       steps:
-  #         # SSH into the VM and run the Selenium Test Suite
-  #         - task: SSH@0
-  #           displayName: 'Run Selenium Test Suite on VM'
-  #           inputs:
-  #             sshEndpoint: '$(sshEndpoint)'
-  #             runOptions: 'inline'
-  #             inline: |
-  #               sudo apt-get update
-  #               sudo DEBIAN_FRONTEND=noninteractive apt-get install -y software-properties-common
-  #               sudo add-apt-repository -y universe
-  #               sudo apt-get update
-  #               sudo DEBIAN_FRONTEND=noninteractive apt-get install -y python3-pip unzip chromium-browser
-  #               mkdir -p /home/azureuser/selenium_tests
-  #               unzip -o /home/azureuser/selenium-$(Build.BuildId).zip -d /home/azureuser/selenium_tests
-  #               cd /home/azureuser/selenium_tests
-  #               python3 -m pip install --upgrade pip
-  #               python3 -m pip install -r requirements.txt
-  #               export PATH="$PATH:/usr/bin"
-  #               python3 login.py > selenium_test_output.log
+      - job: RunSeleniumTests
+        steps:
+          # SSH into the VM and run the Selenium Test Suite
+          - task: SSH@0
+            displayName: 'Run Selenium Test Suite on VM'
+            inputs:
+              sshEndpoint: '$(sshEndpoint)'
+              runOptions: 'inline'
+              inline: |
+                sudo apt-get update
+                sudo DEBIAN_FRONTEND=noninteractive apt-get install -y software-properties-common
+                sudo add-apt-repository -y universe
+                sudo apt-get update
+                sudo DEBIAN_FRONTEND=noninteractive apt-get install -y python3-pip unzip chromium-browser
+                mkdir -p /home/azureuser/selenium_tests
+                unzip -o /home/azureuser/selenium-$(Build.BuildId).zip -d /home/azureuser/selenium_tests
+                cd /home/azureuser/selenium_tests
+                python3 -m pip install --upgrade pip
+                python3 -m pip install -r requirements.txt
+                export PATH="$PATH:/usr/bin"
+                python3 login.py > selenium_test_output.log
+                sudo mkdir -p /var/log/selenium
+                sudo chmod 664 /var/log/selenium
+                sudo mv selenium_test_output.log /var/log/selenium
+                cd "$(System.DefaultWorkingDirectory)"
+                mkdir -p /selenium/logs
+                sudo cp /var/log/selenium/selenium_test_output.log /selenium/logs
 
+          - task: PublishPipelineArtifact@1
+            displayName: 'Publish Selenium Logs'
+            inputs:
+              targetFolder: "$(System.DefaultWorkingDirectory)"/selenium/logs/selenium_test_output.log
+              artifactName: 'selenium'
   #     - job: RunPostmanTests
   #       steps:
   #         - checkout: self
