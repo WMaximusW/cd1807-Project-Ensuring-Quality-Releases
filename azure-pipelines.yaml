@@ -188,3 +188,45 @@ stages:
   #           inputs:
   #             testResultsFiles: '$(Build.ArtifactStagingDirectory)/postman_test_data_validation_results.xml'
   #             testRunTitle: 'Postman Regression Test Results'
+      - job: RunJMeterTests
+        steps:
+          # Run JMeter Stress Test
+          - script: |
+              jmeter -n -t automatedtesting/jmeter/StressTestSuite.jmx -l log/jmeter/stress-test-result.csv -e -f -o log/jmeter/stress-test-html-report -j log/jmeter/jmeter-stress-test.log
+              type log\jmeter\jmeter-stress-test.log
+            displayName: 'JMeter Stress Test'
+            shell: cmd
+
+          # Run JMeter Endurance Test
+          - script: |
+              jmeter -n -t automatedtesting/jmeter/EnduranceTestSuite.jmx -l log/jmeter/endurance-test-result.csv -e -f -o log/jmeter/endurance-test-html-report -j log/jmeter/jmeter-endurance-test.log
+              type log\jmeter\jmeter-endurance-test.log
+            displayName: 'JMeter Endurance Test'
+            shell: cmd
+
+          # Archive the Stress Test Results
+          - task: ArchiveFiles@2
+            displayName: 'Archive Stress Test Results'
+            inputs:
+              rootFolderOrFile: '$(System.DefaultWorkingDirectory)/log/jmeter/stress-test-html-report'
+              includeRootFolder: false
+              archiveType: zip
+              archiveFile: '$(Build.ArtifactStagingDirectory)/stress-test-html-report.zip'
+              verbose: true
+
+          # Archive the Endurance Test Results
+          - task: ArchiveFiles@2
+            displayName: 'Archive Endurance Test Results'
+            inputs:
+              rootFolderOrFile: '$(System.DefaultWorkingDirectory)/log/jmeter/endurance-test-html-report'
+              includeRootFolder: false
+              archiveType: zip
+              archiveFile: '$(Build.ArtifactStagingDirectory)/endurance-test-html-report.zip'
+              verbose: true
+
+          # Publish the JMeter logs as an artifact
+          - task: PublishPipelineArtifact@1
+            displayName: 'Publish JMeter Logs'
+            inputs:
+              targetPath: '$(System.DefaultWorkingDirectory)/log/jmeter'
+              artifact: 'jmeter'
