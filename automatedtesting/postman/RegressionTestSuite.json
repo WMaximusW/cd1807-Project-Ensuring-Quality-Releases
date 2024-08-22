@@ -46,7 +46,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://trungnq72-p3-application-appservice.azurewebsites.net/api/v1/Authors",
+					"raw": "https://trungnq72-p3-application-appservice.azurewebsites.net/api/Authors",
 					"protocol": "https",
 					"host": [
 						"trungnq72-p3-application-appservice",
@@ -85,7 +85,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://trungnq72-p3-application-appservice.azurewebsites.net/api/v1/Authors",
+					"raw": "https://trungnq72-p3-application-appservice.azurewebsites.net/api/Authors",
 					"protocol": "https",
 					"host": [
 						"trungnq72-p3-application-appservice",
