@@ -129,9 +129,9 @@ stages:
       #         contents: 'selenium-$(Build.BuildId).zip'
       #         targetFolder: '/home/azureuser/'
           
-  # - stage: Test
-  #   dependsOn: Deploy
-  #   jobs:
+  - stage: Test
+    dependsOn: Deploy
+    jobs:
   #     - job: RunSeleniumTests
   #       steps:
   #         # SSH into the VM and run the Selenium Test Suite
@@ -192,14 +192,12 @@ stages:
         steps:
           # Run JMeter Stress Test
           - script: |
-              jmeter -n -t automatedtesting/jmeter/StressTestSuite.jmx -l log/jmeter/stress-test-result.csv -e -f -o log/jmeter/stress-test-html-report -j log/jmeter/jmeter-stress-test.log
-              type log\jmeter\jmeter-stress-test.log
+              jmeter -n -t automatedtesting/jmeter/StressTest.jmx -l log/jmeter/stress-test-result.csv -e -f -o log/jmeter/stress-test-html-report -j log/jmeter/jmeter-stress-test.log
             displayName: 'JMeter Stress Test'
 
           # Run JMeter Endurance Test
           - script: |
-              jmeter -n -t automatedtesting/jmeter/EnduranceTestSuite.jmx -l log/jmeter/endurance-test-result.csv -e -f -o log/jmeter/endurance-test-html-report -j log/jmeter/jmeter-endurance-test.log
-              type log\jmeter\jmeter-endurance-test.log
+              jmeter -n -t automatedtesting/jmeter/EnduranceTest.jmx -l log/jmeter/endurance-test-result.csv -e -f -o log/jmeter/endurance-test-html-report -j log/jmeter/jmeter-endurance-test.log
             displayName: 'JMeter Endurance Test'
 
           # Archive the Stress Test Results
