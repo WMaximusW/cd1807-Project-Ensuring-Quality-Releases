@@ -195,14 +195,12 @@ stages:
               jmeter -n -t automatedtesting/jmeter/StressTestSuite.jmx -l log/jmeter/stress-test-result.csv -e -f -o log/jmeter/stress-test-html-report -j log/jmeter/jmeter-stress-test.log
               type log\jmeter\jmeter-stress-test.log
             displayName: 'JMeter Stress Test'
-            shell: cmd
 
           # Run JMeter Endurance Test
           - script: |
               jmeter -n -t automatedtesting/jmeter/EnduranceTestSuite.jmx -l log/jmeter/endurance-test-result.csv -e -f -o log/jmeter/endurance-test-html-report -j log/jmeter/jmeter-endurance-test.log
               type log\jmeter\jmeter-endurance-test.log
             displayName: 'JMeter Endurance Test'
-            shell: cmd
 
           # Archive the Stress Test Results
           - task: ArchiveFiles@2
