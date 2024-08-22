@@ -163,7 +163,7 @@ stages:
           - task: PublishPipelineArtifact@1
             displayName: 'Publish Selenium Logs'
             inputs:
-              targetFolder: "$(System.DefaultWorkingDirectory)"/selenium/logs/selenium_test_output.log
+              targetFolder: '"$(System.DefaultWorkingDirectory)"/selenium/logs/selenium_test_output.log'
               artifactName: 'selenium'
   #     - job: RunPostmanTests
   #       steps:
