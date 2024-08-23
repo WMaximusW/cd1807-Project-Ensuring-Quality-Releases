@@ -171,7 +171,7 @@ stages:
                 E:/Learning/node_modules/.bin/newman run "RegressionTestSuite.json" -r cli,junit --reporter-junit-export="$(Build.ArtifactStagingDirectory)"/postman_test_regression_results.xml
 
           - task: CmdLine@2
-            displayName: 'Run Postman Regression Test Suite'
+            displayName: 'Run Postman Data Validation Test Suite'
             inputs:
               workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
               script: |
@@ -188,7 +188,7 @@ stages:
             inputs:
               testResultsFiles: '$(Build.ArtifactStagingDirectory)/postman_test_data_validation_results.xml'
               testRunTitle: 'Postman Regression Test Results'
-              
+
       - job: RunJMeterTests
         steps:
           # Run JMeter Stress Test
