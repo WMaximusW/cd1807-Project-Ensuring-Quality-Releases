@@ -187,7 +187,7 @@ stages:
             displayName: 'Publish Postman Data Validation Test Results'
             inputs:
               testResultsFiles: '$(Build.ArtifactStagingDirectory)/postman_test_data_validation_results.xml'
-              testRunTitle: 'Postman Regression Test Results'
+              testRunTitle: 'Postman Data Validation Test Results'
 
       - job: RunJMeterTests
         steps:
