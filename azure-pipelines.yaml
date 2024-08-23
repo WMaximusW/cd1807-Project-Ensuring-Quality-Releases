@@ -159,10 +159,6 @@ stages:
           - checkout: self
             clean: true
 
-          # - script: |
-          #     npm install -g newman
-          #   displayName: 'Install Newman'
-
           - task: CmdLine@2
             displayName: 'Run Postman Regression Test Suite'
             inputs:
