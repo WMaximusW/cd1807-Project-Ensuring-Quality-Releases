@@ -72,24 +72,24 @@ stages:
               PathtoPublish: '$(Build.ArtifactStagingDirectory)/webapp-$(Build.BuildId).zip'
               ArtifactName: 'webapp-$(Build.BuildId)'
       
-      # - job: Archive_Selenium_Test_Suite
-      #   steps:
-      #     # Archive the Selenium Test Suite
-      #     - task: ArchiveFiles@2
-      #       displayName: 'Archive Selenium Test Suite'
-      #       inputs:
-      #         rootFolderOrFile: 'automatedtesting/selenium'
-      #         includeRootFolder: false
-      #         archiveType: 'zip'
-      #         archiveFile: '$(Build.ArtifactStagingDirectory)/selenium-$(Build.BuildId)'
-      #         replaceExistingArchive: true
+      - job: Archive_Selenium_Test_Suite
+        steps:
+          # Archive the Selenium Test Suite
+          - task: ArchiveFiles@2
+            displayName: 'Archive Selenium Test Suite'
+            inputs:
+              rootFolderOrFile: 'automatedtesting/selenium'
+              includeRootFolder: false
+              archiveType: 'zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/selenium-$(Build.BuildId)'
+              replaceExistingArchive: true
           
-      #      # Publish the Selenium Test Suite as a build artifact
-      #     - task: PublishBuildArtifacts@1
-      #       displayName: 'Publish Selenium Test Suite Artifact'
-      #       inputs:
-      #         PathtoPublish: '$(Build.ArtifactStagingDirectory)/selenium-$(Build.BuildId).zip'
-      #         ArtifactName: 'selenium-$(Build.BuildId)'
+           # Publish the Selenium Test Suite as a build artifact
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish Selenium Test Suite Artifact'
+            inputs:
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)/selenium-$(Build.BuildId).zip'
+              ArtifactName: 'selenium-$(Build.BuildId)'
 
   - stage: Deploy
     dependsOn: Build
@@ -112,47 +112,47 @@ stages:
               package: '$(Pipeline.Workspace)/webapp-$(Build.BuildId).zip'
               deployToSlotOrASE: false   
 
-      # - job: DeploySeleniumToVM
-      #   steps:
-      #     # Download the artifact
-      #     - task: DownloadPipelineArtifact@2
-      #       displayName: 'Download Selenium Test Suite Artifact' 
-      #       inputs:
-      #         artifact: 'selenium-$(Build.BuildId)'
+      - job: DeploySeleniumToVM
+        steps:
+          # Download the artifact
+          - task: DownloadPipelineArtifact@2
+            displayName: 'Download Selenium Test Suite Artifact' 
+            inputs:
+              artifact: 'selenium-$(Build.BuildId)'
 
-      #     # Copy the Selenium Test Suite to the VM
-      #     - task: CopyFilesOverSSH@0
-      #       displayName: 'Upload Selenium Test Suite to VM'
-      #       inputs:
-      #         sshEndpoint: '$(sshEndpoint)'
-      #         sourceFolder: '$(Pipeline.Workspace)'
-      #         contents: 'selenium-$(Build.BuildId).zip'
-      #         targetFolder: '/home/azureuser/'
+          # Copy the Selenium Test Suite to the VM
+          - task: CopyFilesOverSSH@0
+            displayName: 'Upload Selenium Test Suite to VM'
+            inputs:
+              sshEndpoint: '$(sshEndpoint)'
+              sourceFolder: '$(Pipeline.Workspace)'
+              contents: 'selenium-$(Build.BuildId).zip'
+              targetFolder: '/home/azureuser/'
           
   - stage: Test
     dependsOn: Deploy
     jobs:
-      # - job: RunSeleniumTests
-      #   steps:
-      #     # SSH into the VM and run the Selenium Test Suite
-      #     - task: SSH@0
-      #       displayName: 'Run Selenium Test Suite on VM'
-      #       inputs:
-      #         sshEndpoint: '$(sshEndpoint)'
-      #         runOptions: 'inline'
-      #         inline: |
-      #           sudo apt-get update
-      #           sudo DEBIAN_FRONTEND=noninteractive apt-get install -y software-properties-common
-      #           sudo add-apt-repository -y universe
-      #           sudo apt-get update
-      #           sudo DEBIAN_FRONTEND=noninteractive apt-get install -y python3-pip unzip chromium-browser
-      #           mkdir -p /home/azureuser/selenium_tests
-      #           unzip -o /home/azureuser/selenium-$(Build.BuildId).zip -d /home/azureuser/selenium_tests
-      #           cd /home/azureuser/selenium_tests
-      #           python3 -m pip install --upgrade pip
-      #           python3 -m pip install -r requirements.txt
-      #           export PATH="$PATH:/usr/bin"
-      #           python3 login.py > selenium_test_output.log
+      - job: RunSeleniumTests
+        steps:
+          # SSH into the VM and run the Selenium Test Suite
+          - task: SSH@0
+            displayName: 'Run Selenium Test Suite on VM'
+            inputs:
+              sshEndpoint: '$(sshEndpoint)'
+              runOptions: 'inline'
+              inline: |
+                sudo apt-get update
+                sudo DEBIAN_FRONTEND=noninteractive apt-get install -y software-properties-common
+                sudo add-apt-repository -y universe
+                sudo apt-get update
+                sudo DEBIAN_FRONTEND=noninteractive apt-get install -y python3-pip unzip chromium-browser
+                mkdir -p /home/azureuser/selenium_tests
+                unzip -o /home/azureuser/selenium-$(Build.BuildId).zip -d /home/azureuser/selenium_tests
+                cd /home/azureuser/selenium_tests
+                python3 -m pip install --upgrade pip
+                python3 -m pip install -r requirements.txt
+                export PATH="$PATH:/usr/bin"
+                python3 login.py > selenium_test_output.log
 
       - job: RunPostmanTests
         steps:
@@ -188,41 +188,42 @@ stages:
             inputs:
               testResultsFiles: '$(Build.ArtifactStagingDirectory)/postman_test_data_validation_results.xml'
               testRunTitle: 'Postman Regression Test Results'
-      # - job: RunJMeterTests
-      #   steps:
-      #     # Run JMeter Stress Test
-      #     - script: |
-      #         E:/Learning/apache-jmeter-5.6.3/apache-jmeter-5.6.3/bin/jmeter -n -t automatedtesting/jmeter/StressTest.jmx -l log/jmeter/stress-test-result.csv -e -f -o log/jmeter/stress-test-html-report -j log/jmeter/jmeter-stress-test.log
-      #       displayName: 'JMeter Stress Test'
+              
+      - job: RunJMeterTests
+        steps:
+          # Run JMeter Stress Test
+          - script: |
+              E:/Learning/apache-jmeter-5.6.3/apache-jmeter-5.6.3/bin/jmeter -n -t automatedtesting/jmeter/StressTest.jmx -l log/jmeter/stress-test-result.csv -e -f -o log/jmeter/stress-test-html-report -j log/jmeter/jmeter-stress-test.log
+            displayName: 'JMeter Stress Test'
 
-      #     # Run JMeter Endurance Test
-      #     - script: |
-      #         E:/Learning/apache-jmeter-5.6.3/apache-jmeter-5.6.3/bin/jmeter -n -t automatedtesting/jmeter/EnduranceTest.jmx -l log/jmeter/endurance-test-result.csv -e -f -o log/jmeter/endurance-test-html-report -j log/jmeter/jmeter-endurance-test.log
-      #       displayName: 'JMeter Endurance Test'
+          # Run JMeter Endurance Test
+          - script: |
+              E:/Learning/apache-jmeter-5.6.3/apache-jmeter-5.6.3/bin/jmeter -n -t automatedtesting/jmeter/EnduranceTest.jmx -l log/jmeter/endurance-test-result.csv -e -f -o log/jmeter/endurance-test-html-report -j log/jmeter/jmeter-endurance-test.log
+            displayName: 'JMeter Endurance Test'
 
-      #     # Archive the Stress Test Results
-      #     - task: ArchiveFiles@2
-      #       displayName: 'Archive Stress Test Results'
-      #       inputs:
-      #         rootFolderOrFile: '$(System.DefaultWorkingDirectory)/log/jmeter/stress-test-html-report'
-      #         includeRootFolder: false
-      #         archiveType: zip
-      #         archiveFile: '$(Build.ArtifactStagingDirectory)/stress-test-html-report.zip'
-      #         verbose: true
+          # Archive the Stress Test Results
+          - task: ArchiveFiles@2
+            displayName: 'Archive Stress Test Results'
+            inputs:
+              rootFolderOrFile: '$(System.DefaultWorkingDirectory)/log/jmeter/stress-test-html-report'
+              includeRootFolder: false
+              archiveType: zip
+              archiveFile: '$(Build.ArtifactStagingDirectory)/stress-test-html-report.zip'
+              verbose: true
 
-      #     # Archive the Endurance Test Results
-      #     - task: ArchiveFiles@2
-      #       displayName: 'Archive Endurance Test Results'
-      #       inputs:
-      #         rootFolderOrFile: '$(System.DefaultWorkingDirectory)/log/jmeter/endurance-test-html-report'
-      #         includeRootFolder: false
-      #         archiveType: zip
-      #         archiveFile: '$(Build.ArtifactStagingDirectory)/endurance-test-html-report.zip'
-      #         verbose: true
+          # Archive the Endurance Test Results
+          - task: ArchiveFiles@2
+            displayName: 'Archive Endurance Test Results'
+            inputs:
+              rootFolderOrFile: '$(System.DefaultWorkingDirectory)/log/jmeter/endurance-test-html-report'
+              includeRootFolder: false
+              archiveType: zip
+              archiveFile: '$(Build.ArtifactStagingDirectory)/endurance-test-html-report.zip'
+              verbose: true
 
-      #     # Publish the JMeter logs as an artifact
-      #     - task: PublishPipelineArtifact@1
-      #       displayName: 'Publish JMeter Logs'
-      #       inputs:
-      #         targetPath: '$(System.DefaultWorkingDirectory)/log/jmeter'
-      #         artifact: 'jmeter'
+          # Publish the JMeter logs as an artifact
+          - task: PublishPipelineArtifact@1
+            displayName: 'Publish JMeter Logs'
+            inputs:
+              targetPath: '$(System.DefaultWorkingDirectory)/log/jmeter'
+              artifact: 'jmeter'
